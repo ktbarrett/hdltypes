@@ -38,8 +38,11 @@ namespace hdltypes {
         template <typename IntType>
         constexpr Bit::repr_t int_to_bit_repr(IntType i)
         {
-            if (i == 0 || i == 1) {
-                return i;
+            switch (i){
+                case '0': return 0;
+                case  0 : return 0;
+                case '1': return 1;
+                case  1 : return 1;
             }
             throw std::invalid_argument("Given value is not a Bit");
         }

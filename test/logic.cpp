@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "hdltypes/logic.hpp"
+#include <hdltypes/logic.hpp>
 
 using namespace hdltypes;
 

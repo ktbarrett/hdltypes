@@ -19,7 +19,7 @@ namespace hdltypes {
         constexpr Logic(IntType i);
 
         template <typename BoolType, typename std::enable_if<std::is_same<BoolType, bool>::value, int>::type = 0>
-        constexpr Logic(BoolType b);
+        constexpr Logic(BoolType b) noexcept;
 
     public:  // attributes
         constexpr char value() const noexcept;
@@ -49,7 +49,7 @@ namespace hdltypes {
         constexpr Bit(IntType i);
 
         template <typename BoolType, typename std::enable_if<std::is_same<BoolType, bool>::value, int>::type = 0>
-        constexpr Bit(BoolType b);
+        constexpr Bit(BoolType b) noexcept;
 
         explicit constexpr Bit(const Logic& l);
 
