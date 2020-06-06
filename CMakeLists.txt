@@ -27,11 +27,10 @@ FetchContent_Declare(catch
 
 FetchContent_MakeAvailable(catch)
 
-set(TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/test/")
 add_executable(test_app
     EXCLUDE_FROM_ALL
-    "${TEST_DIR}/main.cpp"
-    "${TEST_DIR}/logic.cpp")
+    "${CMAKE_CURRENT_LIST_DIR}/test/main.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/test/logic.cpp")
 target_link_libraries(test_app
     PRIVATE ${PROJECT_NAME}
     PRIVATE Catch2::Catch2)
