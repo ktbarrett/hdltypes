@@ -19,21 +19,14 @@ target_include_directories(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
 
-include(FetchContent)
-
-FetchContent_Declare(catch
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG v2.12.1)
-
-FetchContent_MakeAvailable(catch)
-
 add_executable(test_app
     EXCLUDE_FROM_ALL
     "${CMAKE_CURRENT_LIST_DIR}/test/main.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/test/logic.cpp")
+target_include_directories(test_app
+    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/test")
 target_link_libraries(test_app
-    PRIVATE ${PROJECT_NAME}
-    PRIVATE Catch2::Catch2)
+    PRIVATE ${PROJECT_NAME})
 
 install(
     TARGETS ${PROJECT_NAME}
