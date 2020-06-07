@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.1)
 
 project(hdltypes
     VERSION 0.0.0
@@ -6,6 +6,10 @@ project(hdltypes
     HOMEPAGE_URL "https://github.com/ktbarrett/hdltypes")
 
 include(GNUInstallDirs)
+
+set(HDLTYPES_DONT_INSTALL_CMAKEFILES OFF CACHE BOOL "Don't install Config.cmake and Targets.cmake files")
+set(HDLTYPES_DONT_INSTALL_HEADERS OFF CACHE BOOL "Don't install headers")
+set(HDLTYPES_DONT_INSTALL_LIBRARIES OFF CACHE BOOL "Don't install built libraries")
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_sources(${PROJECT_NAME}
@@ -28,13 +32,6 @@ target_include_directories(test_app
 target_link_libraries(test_app
     PRIVATE ${PROJECT_NAME})
 
-install(
-    TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Targets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake"
                                  VERSION ${PROJECT_VERSION}
@@ -46,16 +43,39 @@ configure_package_config_file(
   INSTALL_DESTINATION
   ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
 
-install(
-    FILES
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
-
-install(
-    EXPORT ${PROJECT_NAME}Targets
-    FILE ${PROJECT_NAME}Targets.cmake
+export(
+    TARGETS hdltypes
     NAMESPACE ${PROJECT_NAME}::
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+    FILE ${PROJECT_NAME}Targets.cmake)
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/hdltypes DESTINATION include/)
+if (NOT HDLTYPES_DONT_INSTALL_LIBRARIES)
+
+    install(
+        TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}Targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+endif()
+
+if (NOT HDLTYPES_DONT_INSTALL_CMAKEFILES)
+
+    install(
+        FILES
+            "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+            "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+
+    install(
+        EXPORT ${PROJECT_NAME}Targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+
+endif()
+
+if (NOT HDLTYPES_DONT_INSTALL_HEADERS)
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/hdltypes DESTINATION include/)
+
+endif()
