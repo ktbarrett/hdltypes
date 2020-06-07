@@ -1,15 +1,33 @@
 cmake_minimum_required(VERSION 3.1)
 
+## PROJECT #############################
+########################################
+
 project(hdltypes
     VERSION 0.0.0
+    LANGUAGES CXX
     DESCRIPTION "A library of datatypes modelled after types common in HDLs"
     HOMEPAGE_URL "https://github.com/ktbarrett/hdltypes")
 
+## INCLUDES ############################
+########################################
+
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+## CONFIGURATIONS ######################
+########################################
 
 set(HDLTYPES_DONT_INSTALL_CMAKEFILES OFF CACHE BOOL "Don't install Config.cmake and Targets.cmake files")
 set(HDLTYPES_DONT_INSTALL_HEADERS OFF CACHE BOOL "Don't install headers")
 set(HDLTYPES_DONT_INSTALL_LIBRARIES OFF CACHE BOOL "Don't install built libraries")
+
+set(HDLTYPES_CMAKEFILES_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake" CACHE PATH "Where to install Config.cmake and Target.cmake files")
+set(HDLTYPES_HEADER_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}" CACHE PATH "Where to install public headers")
+set(HDLTYPES_LIBRARIES_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Where to install shared libraries")
+
+## LIBRARIES ###########################
+########################################
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_sources(${PROJECT_NAME}
@@ -23,6 +41,9 @@ target_include_directories(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
 
+## TESTS ###############################
+########################################
+
 add_executable(test_app
     EXCLUDE_FROM_ALL
     "${CMAKE_CURRENT_LIST_DIR}/test/main.cpp"
@@ -32,8 +53,10 @@ target_include_directories(test_app
 target_link_libraries(test_app
     PRIVATE ${PROJECT_NAME})
 
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake"
+## CONFIG AND TARGET CMAKE FILES #######
+########################################
+
+write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
                                  VERSION ${PROJECT_VERSION}
                                  COMPATIBILITY ExactVersion)
 
@@ -41,21 +64,22 @@ configure_package_config_file(
   "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
   INSTALL_DESTINATION
-  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+  "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
 
 export(
     TARGETS hdltypes
     NAMESPACE ${PROJECT_NAME}::
     FILE ${PROJECT_NAME}Targets.cmake)
 
+## INSTALLATION ########################
+########################################
+
 if (NOT HDLTYPES_DONT_INSTALL_LIBRARIES)
 
     install(
         TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+        LIBRARY DESTINATION "${HDLTYPES_LIBRARIES_INSTALL_DIR}")
 
 endif()
 
@@ -65,17 +89,17 @@ if (NOT HDLTYPES_DONT_INSTALL_CMAKEFILES)
         FILES
             "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
             "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+        DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
 
     install(
         EXPORT ${PROJECT_NAME}Targets
         NAMESPACE ${PROJECT_NAME}::
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+        DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
 
 endif()
 
 if (NOT HDLTYPES_DONT_INSTALL_HEADERS)
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/hdltypes DESTINATION include/)
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/hdltypes" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
 
 endif()
