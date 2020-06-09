@@ -4,185 +4,174 @@
 #include <cstdint>          // uint8_t
 #include <type_traits>      // enable_if_t, is_same_v, is_integral
 #include <stdexcept>        // invalid_argument
+#include <cassert>
+
+#include "hdltypes/logic.hpp"
 
 
 namespace hdltypes {
 
     namespace {
 
-        template <typename IntType>
-        constexpr Logic::repr_t int_to_logic_repr(IntType i) {
-            // U X 0 1 Z W L H -
-            switch (i) {
-                case 'U': return 0;
-                case 'u': return 0;
-                case 'X': return 1;
-                case 'x': return 1;
-                case  0 : return 2;
-                case '0': return 2;
-                case  1 : return 3;
-                case '1': return 3;
-                case 'Z': return 4;
-                case 'z': return 4;
-                case 'W': return 5;
-                case 'w': return 5;
-                case 'L': return 6;
-                case 'l': return 6;
-                case 'H': return 7;
-                case 'h': return 7;
-                case '-': return 8;
-            }
-            throw std::invalid_argument("Given value is not a Logic");
-        }
-
-        template <typename IntType>
-        constexpr Bit::repr_t int_to_bit_repr(IntType i)
+        constexpr bool logic_value_valid(Logic::value_type value)
         {
-            switch (i){
-                case '0': return 0;
-                case  0 : return 0;
-                case '1': return 1;
-                case  1 : return 1;
-            }
-            throw std::invalid_argument("Given value is not a Bit");
+            return (Logic::U <= value) && (value <= Logic::DC);
         }
 
     }
 
-    template <typename IntType, typename std::enable_if<std::is_integral<IntType>::value && !std::is_same<IntType, bool>::value, int>::type = 0>
-    constexpr Logic::Logic(IntType i) : repr_(int_to_logic_repr(i)) {}
-
-    template <typename BoolType, typename std::enable_if<std::is_same<BoolType, bool>::value, int>::type = 0>
-    constexpr Logic::Logic(BoolType b) noexcept : repr_(repr_t(b) + 2) {}
-
-    constexpr char Logic::value() const noexcept
+    constexpr Logic::Logic(value_type value) noexcept : value_(value)
     {
-        constexpr char table[9] = {'U', 'X', '0', '1', 'Z', 'W', 'L', 'H', '-'};
-        return table[repr_];
+        assert(logic_value_valid(value_));
     }
 
-    constexpr bool is01(const Logic& a) noexcept
+    template <typename CharType>
+    constexpr Logic Logic::deserialize(const CharType& c)
     {
-        return a.repr_ == 2 || a.repr_ == 3;
+        switch (c)
+        {
+            case 'U': return U;
+            case 'u': return U;
+            case 'X': return X;
+            case 'x': return X;
+            case '0': return _0;
+            case '1': return _1;
+            case 'Z': return Z;
+            case 'z': return Z;
+            case 'W': return W;
+            case 'w': return W;
+            case 'L': return L;
+            case 'l': return L;
+            case 'H': return H;
+            case 'h': return H;
+            case '-': return DC;
+        }
+        throw std::invalid_argument("Given value is not a Logic");
     }
 
-    constexpr bool operator== (const Logic& a, const Logic& b) noexcept
+    constexpr Logic::value_type Logic::value() const noexcept
     {
-        return a.repr_ == b.repr_;
+        assert(logic_value_valid(value_));
+        return value_;
     }
 
-    constexpr bool operator!= (const Logic& a, const Logic& b) noexcept
+    template <typename CharType = char>
+    constexpr CharType Logic::serialize() const noexcept
     {
-        return a.repr_ != b.repr_;
+        constexpr CharType table[9] = {
+            'U', 'X', '0', '1', 'Z', 'W', 'L', 'H', '-'};
+        return table[int(value())];
     }
 
-    constexpr Logic operator& (const Logic& a, const Logic& b) noexcept
+    constexpr Logic operator ""_l (char c)
+    {
+        return Logic::deserialize(c);
+    }
+
+    template <typename IntType, typename std::enable_if<
+        std::is_integral<IntType>::value &&
+        !std::is_same<IntType, bool>::value
+    , int>::type = 0>
+    constexpr Logic to_logic(const IntType& i)
+    {
+        switch (i)
+        {
+            case 0: return '0'_l;
+            case 1: return '1'_l;
+        }
+        throw std::invalid_argument("Given value is not a Logic");
+    }
+
+    constexpr Logic to_logic(bool b) noexcept
+    {
+        return b ? '1'_l : '0'_l;
+    }
+
+    constexpr bool operator== (Logic a, Logic b) noexcept
+    {
+        return a.value() == b.value();
+    }
+
+    constexpr bool operator!= (Logic a, Logic b) noexcept
+    {
+        return a.value() != b.value();
+    }
+
+    constexpr Logic operator& (Logic a, Logic b) noexcept
     {
         constexpr Logic table[9][9] = {
-            {'U', 'U', '0', 'U', 'U', 'U', '0', 'U', 'U'},  // U
-            {'U', 'X', '0', 'X', 'X', 'X', '0', 'X', 'X'},  // X
-            {'0', '0', '0', '0', '0', '0', '0', '0', '0'},  // 0
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // 1
-            {'U', 'X', '0', 'X', 'X', 'X', '0', 'X', 'X'},  // Z
-            {'U', 'X', '0', 'X', 'X', 'X', '0', 'X', 'X'},  // W
-            {'0', '0', '0', '0', '0', '0', '0', '0', '0'},  // L
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // H
-            {'U', 'X', '0', 'X', 'X', 'X', '0', 'X', 'X'}}; // -
-        //    U    X    0    1    Z    W    L    H    -
-        return table[a.repr_][b.repr_];
+            {'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l},  // U
+            {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l},  // X
+            {'0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l},  // 0
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // 1
+            {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l},  // Z
+            {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l},  // W
+            {'0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l},  // L
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // H
+            {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l}}; // -
+        //    U      X      0      1      Z      W      L      H      -
+        return table[int(a.value())][int(b.value())];
     }
 
-    constexpr Logic operator| (const Logic& a, const Logic& b) noexcept
+    constexpr Logic operator| (Logic a, Logic b) noexcept
     {
         constexpr Logic table[9][9] = {
-            {'U', 'U', 'U', '1', 'U', 'U', 'U', '1', 'U'},  // U
-            {'U', 'X', 'X', '1', 'X', 'X', 'X', '1', 'X'},  // X
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // 0
-            {'1', '1', '1', '1', '1', '1', '1', '1', '1'},  // 1
-            {'U', 'X', 'X', '1', 'X', 'X', 'X', '1', 'X'},  // Z
-            {'U', 'X', 'X', '1', 'X', 'X', 'X', '1', 'X'},  // W
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // L
-            {'1', '1', '1', '1', '1', '1', '1', '1', '1'},  // H
-            {'U', 'X', 'X', '1', 'X', 'X', 'X', '1', 'X'}}; // -
-        //    U    X    0    1    Z    W    L    H    -
-        return table[a.repr_][b.repr_];
+            {'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l},  // U
+            {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l},  // X
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // 0
+            {'1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l},  // 1
+            {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l},  // Z
+            {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l},  // W
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // L
+            {'1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l},  // H
+            {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l}}; // -
+        //    U      X      0      1      Z      W      L      H      -
+        return table[int(a.value())][int(b.value())];
     }
 
-    constexpr Logic operator^ (const Logic& a, const Logic& b) noexcept
+    constexpr Logic operator^ (Logic a, Logic b) noexcept
     {
         constexpr Logic table[9][9] = {
-            {'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'},  // U
-            {'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'},  // X
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // 0
-            {'U', 'X', '1', '0', 'X', 'X', '1', '0', 'X'},  // 1
-            {'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'},  // Z
-            {'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'},  // W
-            {'U', 'X', '0', '1', 'X', 'X', '0', '1', 'X'},  // L
-            {'U', 'X', '1', '0', 'X', 'X', '1', '0', 'X'},  // H
-            {'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'}}; // -
-        //    U    X    0    1    Z    W    L    H    -
-        return table[a.repr_][b.repr_];
+            {'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l},  // U
+            {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l},  // X
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // 0
+            {'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l},  // 1
+            {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l},  // Z
+            {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l},  // W
+            {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // L
+            {'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l},  // H
+            {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l}}; // -
+        //    U      X      0      1      Z      W      L      H      -
+        return table[int(a.value())][int(b.value())];
     }
 
-    constexpr Logic operator~ (const Logic& a) noexcept
+    constexpr Logic operator~ (Logic a) noexcept
     {
         constexpr Logic table[9] = {
-            'U', 'X', '1', '0', 'X', 'X', '1', '0', 'X'};
-        //   U    X    0    1    Z    W    L    H    -
-        return table[a.repr_];
+            'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l};
+        //   U      X      0      1      Z      W      L      H      -
+        return table[int(a.value())];
     }
 
-    template <typename IntType, typename std::enable_if<std::is_integral<IntType>::value && !std::is_same<IntType, bool>::value, int>::type = 0>
-    constexpr Bit::Bit(IntType i) : repr_(int_to_bit_repr(i)) {}
-
-    template <typename BoolType, typename std::enable_if<std::is_same<BoolType, bool>::value, int>::type = 0>
-    constexpr Bit::Bit(BoolType b) noexcept : repr_(b) {}
-
-    constexpr Bit::Bit(const Logic& l) : Bit(l.value()) {}
-
-    constexpr char Bit::value() const noexcept
+    constexpr bool is01(Logic a) noexcept
     {
-        return repr_ ? '1' :'0';
+        return (a == '0'_l) || (a == '1'_l);
     }
 
-    constexpr bool is01(const Bit& a) noexcept
+    template <typename IntType = int>
+    constexpr IntType to_int(Logic a)
     {
-        return true;
+        if (a == '0'_l) {
+            return 0;
+        } else if (a == '1'_l) {
+            return 1;
+        }
+        throw std::domain_error("Value cannot be converted to an integer.");
     }
 
-    constexpr Bit::operator Logic() const noexcept
+    constexpr bool to_bool(Logic a)
     {
-        return bool(repr_);
-    }
-
-    constexpr bool operator== (const Bit& a, const Bit& b) noexcept
-    {
-        return a.repr_ == b.repr_;
-    }
-
-    constexpr bool operator!= (const Bit& a, const Bit& b) noexcept
-    {
-        return a.repr_ != b.repr_;
-    }
-
-    constexpr Bit operator& (const Bit& a, const Bit& b) noexcept
-    {
-        return a.repr_ && b.repr_;
-    }
-
-    constexpr Bit operator| (const Bit& a, const Bit& b) noexcept
-    {
-        return a.repr_ || b.repr_;
-    }
-
-    constexpr Bit operator^ (const Bit& a, const Bit& b) noexcept
-    {
-        return a.repr_ != b.repr_;
-    }
-
-    constexpr Bit operator~ (const Bit& a) noexcept
-    {
-        return !a.repr_;
+        return to_int(a);
     }
 
 }
