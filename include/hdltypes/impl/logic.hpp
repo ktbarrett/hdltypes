@@ -30,21 +30,21 @@ namespace hdltypes {
     {
         switch (c)
         {
-            case 'U': return U;
-            case 'u': return U;
-            case 'X': return X;
-            case 'x': return X;
-            case '0': return _0;
-            case '1': return _1;
-            case 'Z': return Z;
-            case 'z': return Z;
-            case 'W': return W;
-            case 'w': return W;
-            case 'L': return L;
-            case 'l': return L;
-            case 'H': return H;
-            case 'h': return H;
-            case '-': return DC;
+            case 'U': return Logic(U);
+            case 'u': return Logic(U);
+            case 'X': return Logic(X);
+            case 'x': return Logic(X);
+            case '0': return Logic(_0);
+            case '1': return Logic(_1);
+            case 'Z': return Logic(Z);
+            case 'z': return Logic(Z);
+            case 'W': return Logic(W);
+            case 'w': return Logic(W);
+            case 'L': return Logic(L);
+            case 'l': return Logic(L);
+            case 'H': return Logic(H);
+            case 'h': return Logic(H);
+            case '-': return Logic(DC);
         }
         throw std::invalid_argument("Given value is not a Logic");
     }

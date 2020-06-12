@@ -64,7 +64,7 @@ namespace hdltypes {
             This is justified because it is difficult to break, except on purpose;
             while allowing us additional performance.
             */
-        constexpr Logic(value_type value) noexcept;
+        explicit constexpr Logic(value_type value) noexcept;
 
         /** Converts character values into Logic. See table below for more details.
 
