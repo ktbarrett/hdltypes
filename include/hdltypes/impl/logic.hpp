@@ -166,10 +166,132 @@ namespace hdltypes {
         } else if (a == '1'_l) {
             return 1;
         }
-        throw std::domain_error("Value cannot be converted to an integer.");
+        throw std::domain_error("Logic value cannot be converted to an integer.");
     }
 
     constexpr bool to_bool(Logic a)
+    {
+        return to_int(a);
+    }
+
+    namespace {
+
+        constexpr bool bit_value_valid(Bit::value_type value)
+        {
+            return (Bit::_0 == value) || (value <= Bit::_1);
+        }
+
+    }
+
+    constexpr Bit::Bit(value_type value) noexcept : value_(value)
+    {
+        assert(bit_value_valid(value_));
+    }
+
+    template <typename CharType>
+    constexpr Bit Bit::deserialize(const CharType& c)
+    {
+        switch (c)
+        {
+            case '0': return Bit(_0);
+            case '1': return Bit(_1);
+        }
+        throw std::invalid_argument("Given value is not a Bit");
+    }
+
+    constexpr value_type Bit::value() const noexcept
+    {
+        assert(bit_value_valid(value_));
+        return value_;
+    }
+
+    template <typename CharType = char>
+    constexpr CharType Bit::serialize() const noexcept
+    {
+        return (value() == _1) ? '1' : '0';
+    }
+
+    constexpr Bit operator ""_b (char c)
+    {
+        return Bit::deserialize(c);
+    }
+
+    constexpr Bit::Bit(Logic a)
+    {
+        if (a == '0'_l) {
+            return '0'_b;
+        } else if (a == '1'_l) {
+            return '1'_b;
+        }
+        throw std::domain_error("Logic value cannot be converted to Bit");
+    }
+
+    constexpr operator Bit::Logic() const noexcept
+    {
+        return (value() == _1) ? '1'_l : '0'_l;
+    }
+
+    constexpr Bit to_logic(bool b) noexcept
+    {
+        return b ? '1'_b : '0'_b;
+    }
+
+    template <typename IntType, typename std::enable_if<
+        std::is_integral<IntType>::value &&
+        !std::is_same<IntType, bool>::value
+    , int>::type = 0>
+    constexpr Bit to_logic(const IntType& i)
+    {
+        switch (i)
+        {
+            case 0: return '0'_b;
+            case 1: return '1'_b;
+        }
+        throw std::invalid_argument("Given value is not a Bit");
+    }
+
+    constexpr bool operator== (Bit a, Bit b) noexcept
+    {
+        return a.value() == b.value();
+    }
+
+    constexpr bool operator!= (Bit a, Bit b) noexcept
+    {
+        return a.value() != b.value();
+    }
+
+    constexpr Bit operator& (Bit a, Bit b) noexcept
+    {
+        return to_bit((a == '1'_b) && (b == '1'_b));
+    }
+
+    constexpr Bit operator| (Bit a, Bit b) noexcept
+    {
+        return to_bit((a == '1'_b) || (b == '1'_b));
+    }
+
+    constexpr Bit operator^ (Bit a, Bit b) noexcept
+    {
+        return to_bit(a != b);
+    }
+
+    constexpr Bit operator~ (Bit a) noexcept
+    {
+        return to_bit(a == '0'_b);
+    }
+
+    constexpr bool is01 (Bit a) noexcept
+    {
+        return true;
+    }
+
+    template <typename IntType = int>
+    constexpr IntType to_int(Bit a) noexcept
+    {
+        return a == '1'_b;
+    }
+
+    constexpr bool to_bool(Bit a) noexcept
     {
         return to_int(a);
     }

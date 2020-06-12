@@ -68,25 +68,27 @@ namespace hdltypes {
 
         /** Converts character values into Logic. See table below for more details.
 
-            `U`, `u` => U
-            `X`, `x` => X
-            `0`      => _0
-            `1`      => _1
-            `Z`, `z` => Z
-            `W`, `w` => W
-            `L`, `l` => L
-            `H`, `h` => H
-            `-`      => DC
+        \verbatim
+            'U'  'u'    => U
+            'X'  'x'    => X
+            '0'         => _0
+            '1'         => _1
+            'Z'  'z'    => Z
+            'W'  'w'    => W
+            'L'  'l'    => L
+            'H'  'h'    => H
+            '-'         => DC
+        \endverbatim
             */
         template <typename CharType>
         static constexpr Logic deserialize(const CharType& c);
 
     public:  // attributes
 
-        /** Obtain the value_type value */
+        /** Obtain the value_type value. */
         constexpr value_type value() const noexcept;
 
-        /** Convert a Logic into a printable representation */
+        /** Convert a Logic into a printable representation. */
         template <typename CharType = char>
         constexpr CharType serialize() const noexcept;
 
@@ -95,7 +97,7 @@ namespace hdltypes {
         value_type value_ {U};
     };
 
-    /** \relates Logic UDL convience syntax for Logic::deserialize */
+    /** \relates Logic UDL convience syntax for Logic::deserialize. */
     constexpr Logic operator ""_l (char c);
 
     /** \relates Logic Converts bool values `false` and `true` to Logic `0` and `1`, respectively. */
@@ -108,10 +110,10 @@ namespace hdltypes {
     , int>::type = 0>
     constexpr Logic to_logic(const IntType& i);
 
-    /** \relates Logic Value equality */
+    /** \relates Logic Value equality. */
     constexpr bool operator== (Logic a, Logic b) noexcept;
 
-    /** \relates Logic Value inqueality */
+    /** \relates Logic Value inqueality. */
     constexpr bool operator!= (Logic a, Logic b) noexcept;
 
     /** \relates Logic Logical "and" operation. See implementation for details. */
@@ -126,18 +128,124 @@ namespace hdltypes {
     /** \relates Logic Logical inversion operation. See implementation for details. */
     constexpr Logic operator~ (Logic a) noexcept;
 
-    /** \relates Logic Returns `true` if the value is `0` or `1` */
+    /** \relates Logic Returns `true` if the value is `0` or `1`. */
     constexpr bool is01 (Logic a) noexcept;
 
     /** \relates Logic Converts a Logic `0`/`L` or `1`/`H` to the integer `0` or `1`, respectively. */
     template <typename IntType = int>
     constexpr IntType to_int(Logic a);
 
-    /** \relates Logic Converts a Logic `0`/`L` or `1`/`H` to the integer `0` or `1`, respectively. */
+    /** \relates Logic Converts a Logic `0`/`L` or `1`/`H` to the integer `false` or `true`, respectively. */
     constexpr bool to_bool(Logic a);
+
+
+    /** Bit value type
+
+        Implementation of a bit value. Supports the values `0` and `1`. Values of this
+        type are immutable. Supports (de)serialization, comparison, and logic operations:
+        "and", "or", "xor", and inversion.
+        */
+    class Bit {
+
+    public:  // types
+
+        /** Representation of acceptable values of a Bit.
+
+            Naming and ordering are public information and must be controlled.
+            */
+        enum value_type : uint8_t {
+            _0, ///< 0
+            _1  ///< 1
+        };
+
+    public:  // constructors
+
+        /** Default Bit to 0. */
+        constexpr Bit() noexcept = default;
+
+        /** Create a Bit given a value_type value.
+
+            Note that this function is noexcept, there is *no* checking on passed values.
+            This is justified because it is difficult to break, except on purpose;
+            while allowing us additional performance.
+            */
+        explicit constexpr Bit(value_type value) noexcept;
+
+        /** Converts character values into Logic. See table below for more details.
+
+        \verbatim
+            '0'      => _0
+            '1'      => _1
+        \endverbatim
+            */
+        template <typename CharType>
+        static constexpr Bit deserialize(const CharType& c);
+
+    public:  // attributes
+
+        /** Obtain the value_type value. */
+        constexpr value_type value() const noexcept;
+
+        /** Convert a Bit into a printable representation. */
+        template <typename CharType = char>
+        constexpr CharType serialize() const noexcept;
+
+    public:  // Logic conversion
+
+        /** Allows a Logic to be converted to a Bit. Fails if the Logic is not `0` or `1`. */
+        explicit constexpr Bit(Logic a);
+
+        /** Allows a Bit to be converted *implicitly* to a Logic. */
+        constexpr operator Logic() const noexcept;
+
+    private: // members
+
+        value_type value_ {_0};
+    };
+
+    /** \relates Bit UDL convience syntax for Bit::deserialize. */
+    constexpr Bit operator ""_b (char c);
+
+    /** \relates Bit Converts bool values `false` and `true` to Bit `0` and `1`, respectively. */
+    constexpr Bit to_logic(bool b) noexcept;
+
+    /** \relates Bit Converts integer values `0` and `1` into Bit `0` and `1`, respectively. */
+    template <typename IntType, typename std::enable_if<
+        std::is_integral<IntType>::value &&
+        !std::is_same<IntType, bool>::value
+    , int>::type = 0>
+    constexpr Bit to_logic(const IntType& i);
+
+    /** \relates Bit Value equality. */
+    constexpr bool operator== (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Value inqueality. */
+    constexpr bool operator!= (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Logical "and" operation. Returns `1` if both arguments are `1`. */
+    constexpr Bit operator& (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Logical "or" operation. Returns `1` if either arguments are `1`. */
+    constexpr Bit operator| (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Logical "xor" operation. Returns `1` if arguments aren't equivalent. */
+    constexpr Bit operator^ (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Logical inversion operation. Returns `1` if given `0`, and vice versa. */
+    constexpr Bit operator~ (Bit a) noexcept;
+
+    /** \relates Bit Returns `true`. */
+    constexpr bool is01 (Bit a) noexcept;
+
+    /** \relates Bit Converts a Bit `0` or `1` to the integer `0` or `1`, respectively. */
+    template <typename IntType = int>
+    constexpr IntType to_int(Bit a) noexcept;
+
+    /** \relates Bit Converts a Bit `0` or `1` to the boolean `false` or `true`, respectively. */
+    constexpr bool to_bool(Bit a) noexcept;
 
 }
 
 #include "hdltypes/impl/logic.hpp"
 
-#endif
+#endi
