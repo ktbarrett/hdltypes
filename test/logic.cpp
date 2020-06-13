@@ -66,3 +66,56 @@ TEST_CASE("Logic operations", "[logic]")
     REQUIRE( ('W'_l & 'U'_l) == 'U'_l );
     REQUIRE( ~'L'_l == '1'_l );
 }
+
+TEST_CASE("Bit serialization", "[logic]")
+{
+    REQUIRE( Bit::deserialize('0').serialize() == '0' );
+    REQUIRE( Bit::deserialize('1').serialize() == '1' );
+
+    REQUIRE_THROWS( Bit::deserialize('\0') );
+    REQUIRE_THROWS( Bit::deserialize('X') );
+}
+
+TEST_CASE("Bit conversions", "[logic]")
+{
+    REQUIRE( to_bit(0) == '0'_b );
+    REQUIRE( to_bit(1) == '1'_b );
+    REQUIRE_THROWS( to_bit(123) );
+
+    REQUIRE( to_bit(false) == '0'_b );
+    REQUIRE( to_bit(true) == '1'_b );
+}
+
+TEST_CASE("Bit attributes", "[logic]")
+{
+    REQUIRE( is01('0'_b) );
+    REQUIRE( is01('1'_b) );
+
+    REQUIRE( ('0'_b).value() == 0 );
+    REQUIRE( ('1'_b).value() == 1 );
+}
+
+TEST_CASE("Bit operations", "[logic]")
+{
+    REQUIRE( '0'_b == '0'_b );
+    REQUIRE( '0'_b != '1'_b );
+
+    // we can afford to be exhaustive
+    REQUIRE( ('0'_b & '0'_b) == '0'_b );
+    REQUIRE( ('0'_b & '1'_b) == '0'_b );
+    REQUIRE( ('1'_b & '0'_b) == '0'_b );
+    REQUIRE( ('1'_b & '1'_b) == '1'_b );
+
+    REQUIRE( ('0'_b | '0'_b) == '0'_b );
+    REQUIRE( ('0'_b | '1'_b) == '1'_b );
+    REQUIRE( ('1'_b | '0'_b) == '1'_b );
+    REQUIRE( ('1'_b | '1'_b) == '1'_b );
+
+    REQUIRE( ('0'_b ^ '0'_b) == '0'_b );
+    REQUIRE( ('0'_b ^ '1'_b) == '1'_b );
+    REQUIRE( ('1'_b ^ '0'_b) == '1'_b );
+    REQUIRE( ('1'_b ^ '1'_b) == '0'_b );
+
+    REQUIRE( ~'0'_b == '1'_b );
+    REQUIRE( ~'1'_b == '0'_b );
+}
