@@ -1,0 +1,14 @@
+dist: bionic
+
+git:
+  depth: false
+
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - cmake . && cmake --build . --target test_app
+  - ./test_app
