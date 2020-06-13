@@ -53,6 +53,12 @@ target_include_directories(test_app
 target_link_libraries(test_app
     PRIVATE ${PROJECT_NAME})
 
+target_compile_options(test_app
+    INTERFACE $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+          -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion>
+     $<$<CXX_COMPILER_ID:MSVC>:
+          /W4>)  # TODO care about Windows
+
 ## CONFIG AND TARGET CMAKE FILES #######
 ########################################
 
