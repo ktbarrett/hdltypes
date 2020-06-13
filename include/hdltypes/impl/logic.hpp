@@ -55,7 +55,7 @@ namespace hdltypes {
         return value_;
     }
 
-    template <typename CharType = char>
+    template <typename CharType>
     constexpr CharType Logic::serialize() const noexcept
     {
         constexpr CharType table[9] = {
@@ -71,7 +71,7 @@ namespace hdltypes {
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
         !std::is_same<IntType, bool>::value
-    , int>::type = 0>
+    , int>::type>
     constexpr Logic to_logic(const IntType& i)
     {
         switch (i)
@@ -158,7 +158,7 @@ namespace hdltypes {
         return (a == '0'_l) || (a == '1'_l);
     }
 
-    template <typename IntType = int>
+    template <typename IntType>
     constexpr IntType to_int(Logic a)
     {
         if (a == '0'_l) {
@@ -205,7 +205,7 @@ namespace hdltypes {
         return value_;
     }
 
-    template <typename CharType = char>
+    template <typename CharType>
     constexpr CharType Bit::serialize() const noexcept
     {
         return (value() == _1) ? '1' : '0';
@@ -252,7 +252,7 @@ namespace hdltypes {
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
         !std::is_same<IntType, bool>::value
-    , int>::type = 0>
+    , int>::type>
     constexpr Bit to_bit(const IntType& i)
     {
         switch (i)
@@ -298,7 +298,7 @@ namespace hdltypes {
         return true;
     }
 
-    template <typename IntType = int>
+    template <typename IntType>
     constexpr IntType to_int(Bit a) noexcept
     {
         return a == '1'_b;
