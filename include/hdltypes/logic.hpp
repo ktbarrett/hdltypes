@@ -207,14 +207,20 @@ namespace hdltypes {
     constexpr Bit operator ""_b (char c);
 
     /** \relates Bit Converts bool values `false` and `true` to Bit `0` and `1`, respectively. */
-    constexpr Bit to_logic(bool b) noexcept;
+    constexpr Bit to_bit(bool b) noexcept;
 
     /** \relates Bit Converts integer values `0` and `1` into Bit `0` and `1`, respectively. */
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type = 0>
-    constexpr Bit to_logic(const IntType& i);
+    constexpr Bit to_bit(const IntType& i);
+
+    /** \relates Bit Converts the Logic values `0` and `1` to Bit `0` and `1`, respectively. */
+    constexpr Bit to_bit(Logic a);
+
+    /** \relates Logic converts the Bit values `0` and `1` to Logic `0` and `1`, respectively. */
+    constexpr Logic to_logic(Bit a) noexcept;
 
     /** \relates Bit Value equality. */
     constexpr bool operator== (Bit a, Bit b) noexcept;
@@ -248,4 +254,4 @@ namespace hdltypes {
 
 #include "hdltypes/impl/logic.hpp"
 
-#endi
+#endif

@@ -13,7 +13,7 @@ namespace hdltypes {
 
     namespace {
 
-        constexpr bool logic_value_valid(Logic::value_type value)
+        static constexpr bool logic_value_valid(Logic::value_type value)
         {
             return (Logic::U <= value) && (value <= Logic::DC);
         }
@@ -199,7 +199,7 @@ namespace hdltypes {
         throw std::invalid_argument("Given value is not a Bit");
     }
 
-    constexpr value_type Bit::value() const noexcept
+    constexpr Bit::value_type Bit::value() const noexcept
     {
         assert(bit_value_valid(value_));
         return value_;
@@ -216,7 +216,7 @@ namespace hdltypes {
         return Bit::deserialize(c);
     }
 
-    constexpr Bit::Bit(Logic a)
+    constexpr Bit to_bit(Logic a)
     {
         if (a == '0'_l) {
             return '0'_b;
@@ -226,12 +226,25 @@ namespace hdltypes {
         throw std::domain_error("Logic value cannot be converted to Bit");
     }
 
-    constexpr operator Bit::Logic() const noexcept
+    constexpr Logic to_logic(Bit a) noexcept
+    {
+        if (a == '0'_b) {
+            return '0'_l;
+        } else {
+            return '1'_l;
+        }
+    }
+
+    constexpr Bit::Bit(Logic a) : Bit(to_bit(a))
+    {
+    }
+
+    constexpr Bit::operator Logic() const noexcept
     {
         return (value() == _1) ? '1'_l : '0'_l;
     }
 
-    constexpr Bit to_logic(bool b) noexcept
+    constexpr Bit to_bit(bool b) noexcept
     {
         return b ? '1'_b : '0'_b;
     }
@@ -240,7 +253,7 @@ namespace hdltypes {
         std::is_integral<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type = 0>
-    constexpr Bit to_logic(const IntType& i)
+    constexpr Bit to_bit(const IntType& i)
     {
         switch (i)
         {
