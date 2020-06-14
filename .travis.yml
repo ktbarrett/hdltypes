@@ -1,7 +1,14 @@
 dist: bionic
 
+# Travis is set to build whenever a branch is pushed,
+# but we only want that behavior for master
+# all PRs still run tests on every push
+branches:
+  only:
+    - master
+
 git:
-  depth: false
+  depth: false  # shallow git clone
 
 language: cpp
 
@@ -17,7 +24,7 @@ addons:
       - g++-9
 
 install:
-  - "[ $CXX = g++ ] && export CXX=g++-9 || true"
+  - "[ $CXX = g++ ] && export CXX=g++-9 || true"  # force GCC run to use GCC 9
 
 script:
   - cmake . && cmake --build . --target test_app
