@@ -9,6 +9,16 @@ compiler:
   - gcc
   - clang
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-9
+
+install:
+  - "[ $CXX = g++ ] && export CXX=g++-9 || true"
+
 script:
   - cmake . && cmake --build . --target test_app
   - ./test_app
