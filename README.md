@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/ktbarrett/hdltypes.svg?branch=master)](https://travis-ci.org/ktbarrett/hdltypes)
 
-# hdltypes - C++ Datatype Library for Modeling Hardware
+# hdltypes
 
 A collection of datatypes and utility functions written in modern C++ that can be used to model HDL code.
 This project aims to create a set of datatypes that are intuitive to use, consistent, and performant.
@@ -19,14 +19,16 @@ If you have any private inquiries, feel free to [email me](mailto:dev.ktbarrett@
 ## Overview
 
 ?????????
+- uses VHDL datatypes as inspiration
+- value semantics rather than container semantics
+- code snippet?
 
 ## Installation
 
 ### Prerequisites
 
-There isn't a reason this project shouldn't work on *any* platform where a C++14 compiler and CMake is available.
-There are currently no external runtime or testing dependencies.
-However, only Ubuntu 18.04 and Debian Testing are regularly tested. YMMV.
+There isn't a reason this project shouldn't work on *any* platform where a C++14 compiler and CMake are available.
+However, only Ubuntu 18.04 and Debian Sid are regularly tested. YMMV.
 
 - C++14 compiler
   - GCC 5.0
@@ -37,7 +39,6 @@ However, only Ubuntu 18.04 and Debian Testing are regularly tested. YMMV.
 ### Build and Install
 
 CMake is used to build the library and the tests.
-
 To build and install the library, first clone the repo.
 
 ```bash
@@ -78,20 +79,21 @@ Debug mode enables `assert`s, turns off optimization, and adds debug information
 cmake ../hdltypes -DCMAKE_BUILD_TYPE=Debug
 ```
 
-If you have multiple C++ compilers on your system, note that CMake respects the contents of the `CC` and `CXX` environment variable.
+If you have multiple C++ compilers on your system, note that CMake respects the `CC` and `CXX` environment variables.
 For more info, read the [cmake documentation](https://cmake.org/cmake/help/latest/).
 
 
 ### Test Application
 
-Or you can build and run the test application.
+Once the project is confgured, you can build and run the test application.
+From your build directory:
 
 ```bash
 cmake --build --target test_app .
 ./test_app
 ```
 
-The test application is written with Catch2, `--help` should illustrate options you can pass to the test application.
+The test application is written with Catch2. `./test_app --help` should illustrate options you can pass to the test application.
 See [Catch2's documentation](https://github.com/catchorg/Catch2/blob/master/docs/command-line.md#top) on the subject for more details.
 
 ### Using the Installed Library in Another C++ Project
@@ -102,7 +104,7 @@ Then, you can link your targets against the `hdltypes::hdltypes` target to compi
 
 ## Scope
 
-Initially the project will implement all the builtin types of VHDL:
+Initially the project will implement all the builtin types of VHDL, albiet with different names:
 
 - `bit`
 - `logic`
