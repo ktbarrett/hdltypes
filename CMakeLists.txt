@@ -33,7 +33,9 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_sources(${PROJECT_NAME}
     INTERFACE
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes/logic.hpp>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/logic.hpp>)
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/logic.hpp>
+        $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes.hpp>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes.hpp>)
 target_include_directories(${PROJECT_NAME}
     INTERFACE
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
@@ -107,5 +109,6 @@ endif()
 if (NOT HDLTYPES_DONT_INSTALL_HEADERS)
 
     install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/hdltypes" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
+    install(FILES "${PROJECT_SOURCE_DIR}/include/hdltypes.hpp" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
 
 endif()
