@@ -43,6 +43,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
 
+add_library(hdltypes::hdltypes ALIAS hdltypes)
+
 ## TESTS ###############################
 ########################################
 
