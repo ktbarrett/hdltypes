@@ -29,19 +29,19 @@ set(HDLTYPES_LIBRARIES_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Where t
 ## LIBRARIES ###########################
 ########################################
 
-add_library(${PROJECT_NAME} INTERFACE)
+add_library(${PROJECT_NAME} SHARED src/dummy.cpp)
 target_sources(${PROJECT_NAME}
-    INTERFACE
+    PUBLIC
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes/logic.hpp>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/logic.hpp>
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes.hpp>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes.hpp>)
 target_include_directories(${PROJECT_NAME}
-    INTERFACE
+    PUBLIC
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
 add_library(hdltypes::hdltypes ALIAS hdltypes)
 
