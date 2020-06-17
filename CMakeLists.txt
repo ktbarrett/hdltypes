@@ -18,10 +18,6 @@ include(CMakePackageConfigHelpers)
 ## CONFIGURATIONS ######################
 ########################################
 
-set(HDLTYPES_DONT_INSTALL_CMAKEFILES OFF CACHE BOOL "Don't install Config.cmake and Targets.cmake files")
-set(HDLTYPES_DONT_INSTALL_HEADERS OFF CACHE BOOL "Don't install headers")
-set(HDLTYPES_DONT_INSTALL_LIBRARIES OFF CACHE BOOL "Don't install built libraries")
-
 set(HDLTYPES_CMAKEFILES_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake" CACHE PATH "Where to install Config.cmake and Target.cmake files")
 set(HDLTYPES_HEADER_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}" CACHE PATH "Where to install public headers")
 set(HDLTYPES_LIBRARIES_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Where to install shared libraries")
@@ -84,33 +80,21 @@ export(
 ## INSTALLATION ########################
 ########################################
 
-if (NOT HDLTYPES_DONT_INSTALL_LIBRARIES)
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Targets
+    LIBRARY DESTINATION "${HDLTYPES_LIBRARIES_INSTALL_DIR}")
 
-    install(
-        TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}Targets
-        LIBRARY DESTINATION "${HDLTYPES_LIBRARIES_INSTALL_DIR}")
+install(
+    FILES
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
 
-endif()
+install(
+    EXPORT ${PROJECT_NAME}Targets
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
 
-if (NOT HDLTYPES_DONT_INSTALL_CMAKEFILES)
-
-    install(
-        FILES
-            "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-            "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
-
-    install(
-        EXPORT ${PROJECT_NAME}Targets
-        NAMESPACE ${PROJECT_NAME}::
-        DESTINATION "${HDLTYPES_CMAKEFILES_INSTALL_DIR}")
-
-endif()
-
-if (NOT HDLTYPES_DONT_INSTALL_HEADERS)
-
-    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/hdltypes" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
-    install(FILES "${PROJECT_SOURCE_DIR}/include/hdltypes.hpp" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
-
-endif()
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/hdltypes" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
+install(FILES "${PROJECT_SOURCE_DIR}/include/hdltypes.hpp" DESTINATION "${HDLTYPES_HEADER_INSTALL_DIR}")
