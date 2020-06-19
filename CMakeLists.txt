@@ -26,12 +26,6 @@ set(HDLTYPES_LIBRARIES_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Where t
 ########################################
 
 add_library(${PROJECT_NAME} SHARED src/dummy.cpp)
-target_sources(${PROJECT_NAME}
-    PUBLIC
-        $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes/logic.hpp>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/logic.hpp>
-        $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes.hpp>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes.hpp>)
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
