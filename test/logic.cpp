@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include <hdltypes/logic.hpp>
+#include <hdltypes.hpp>
 
 using namespace hdltypes;
 
@@ -65,6 +65,26 @@ TEST_CASE("Logic operations", "[logic]")
     REQUIRE( ('X'_l ^ 'L'_l) == 'X'_l );
     REQUIRE( ('W'_l & 'U'_l) == 'U'_l );
     REQUIRE( ~'L'_l == '1'_l );
+
+    {   auto a = 'H'_l;
+        a &= '1'_l;
+        REQUIRE(a == '1'_l);
+    }
+
+    {   auto a = '0'_l;
+        a |= '1'_l;
+        REQUIRE(a == '1'_l);
+    }
+
+    {   auto a = 'W'_l;
+        a ^= '1'_l;
+        REQUIRE(a == 'X'_l);
+    }
+
+    {   auto a = '0'_l;
+        inplace_invert(a);
+        REQUIRE(a == '1'_l);
+    }
 }
 
 TEST_CASE("Bit serialization", "[logic]")
@@ -118,4 +138,24 @@ TEST_CASE("Bit operations", "[logic]")
 
     REQUIRE( ~'0'_b == '1'_b );
     REQUIRE( ~'1'_b == '0'_b );
+
+    {   auto a = '0'_b;
+        a &= '1'_b;
+        REQUIRE(a == '0'_b);
+    }
+
+    {   auto a = '0'_b;
+        a |= '1'_b;
+        REQUIRE(a == '1'_b);
+    }
+
+    {   auto a = '1'_b;
+        a ^= '1'_b;
+        REQUIRE(a == '0'_b);
+    }
+
+    {   auto a = '0'_b;
+        inplace_invert(a);
+        REQUIRE(a == '1'_b);
+    }
 }
