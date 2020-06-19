@@ -113,6 +113,11 @@ namespace hdltypes {
         return table[int(a.value())][int(b.value())];
     }
 
+    constexpr Logic& operator&= (Logic& a, Logic b) noexcept
+    {
+        return (a = a & b);
+    }
+
     constexpr Logic operator| (Logic a, Logic b) noexcept
     {
         constexpr Logic table[9][9] = {
@@ -127,6 +132,11 @@ namespace hdltypes {
             {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l}}; // -
         //    U      X      0      1      Z      W      L      H      -
         return table[int(a.value())][int(b.value())];
+    }
+
+    constexpr Logic& operator|= (Logic& a, Logic b) noexcept
+    {
+        return (a = a | b);
     }
 
     constexpr Logic operator^ (Logic a, Logic b) noexcept
@@ -145,12 +155,22 @@ namespace hdltypes {
         return table[int(a.value())][int(b.value())];
     }
 
+    constexpr Logic& operator^= (Logic& a, Logic b) noexcept
+    {
+        return (a = a ^ b);
+    }
+
     constexpr Logic operator~ (Logic a) noexcept
     {
         constexpr Logic table[9] = {
             'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l};
         //   U      X      0      1      Z      W      L      H      -
         return table[int(a.value())];
+    }
+
+    constexpr Logic& inplace_invert (Logic& a) noexcept
+    {
+        return (a = ~a);
     }
 
     constexpr bool is01(Logic a) noexcept
@@ -278,9 +298,19 @@ namespace hdltypes {
         return to_bit((a == '1'_b) && (b == '1'_b));
     }
 
+    constexpr Bit& operator&= (Bit& a, Bit b) noexcept
+    {
+        return (a = a & b);
+    }
+
     constexpr Bit operator| (Bit a, Bit b) noexcept
     {
         return to_bit((a == '1'_b) || (b == '1'_b));
+    }
+
+    constexpr Bit& operator|= (Bit& a, Bit b) noexcept
+    {
+        return (a = a | b);
     }
 
     constexpr Bit operator^ (Bit a, Bit b) noexcept
@@ -288,9 +318,19 @@ namespace hdltypes {
         return to_bit(a != b);
     }
 
+    constexpr Bit& operator^= (Bit& a, Bit b) noexcept
+    {
+        return (a = a ^ b);
+    }
+
     constexpr Bit operator~ (Bit a) noexcept
     {
         return to_bit(a == '0'_b);
+    }
+
+    constexpr Bit& inplace_invert (Bit& a) noexcept
+    {
+        return (a = ~a);
     }
 
     constexpr bool is01 (Bit a) noexcept

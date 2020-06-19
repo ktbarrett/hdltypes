@@ -119,14 +119,26 @@ namespace hdltypes {
     /** \relates Logic Logical "and" operation. See implementation for details. */
     constexpr Logic operator& (Logic a, Logic b) noexcept;
 
+    /** \relates Logic Inplace version of the logical "and" operation. */
+    constexpr Logic& operator&= (Logic& a, Logic b) noexcept;
+
     /** \relates Logic Logical "or" operation. See implementation for details. */
     constexpr Logic operator| (Logic a, Logic b) noexcept;
+
+    /** \relates Logic Inplace version of the logical "or" operation. */
+    constexpr Logic& operator|= (Logic& a, Logic b) noexcept;
 
     /** \relates Logic Logical "xor" operation. See implementation for details. */
     constexpr Logic operator^ (Logic a, Logic b) noexcept;
 
+    /** \relates Logic Inplace version of the logical "xor" operation. */
+    constexpr Logic& operator^= (Logic& a, Logic b) noexcept;
+
     /** \relates Logic Logical inversion operation. See implementation for details. */
     constexpr Logic operator~ (Logic a) noexcept;
+
+    /** \relates Logic Inplace version of the logical "invert" operation. */
+    constexpr Logic& inplace_invert (Logic& a) noexcept;
 
     /** \relates Logic Returns `true` if the value is `0` or `1`. */
     constexpr bool is01 (Logic a) noexcept;
@@ -231,14 +243,26 @@ namespace hdltypes {
     /** \relates Bit Logical "and" operation. Returns `1` if both arguments are `1`. */
     constexpr Bit operator& (Bit a, Bit b) noexcept;
 
+    /** \relates Bit Inplace version of the logical "and" operation. */
+    constexpr Bit& operator&= (Bit& a, Bit b) noexcept;
+
     /** \relates Bit Logical "or" operation. Returns `1` if either arguments are `1`. */
     constexpr Bit operator| (Bit a, Bit b) noexcept;
+
+    /** \relates Bit Inplace version of the logical "or" operation. */
+    constexpr Bit& operator|= (Bit& a, Bit b) noexcept;
 
     /** \relates Bit Logical "xor" operation. Returns `1` if arguments aren't equivalent. */
     constexpr Bit operator^ (Bit a, Bit b) noexcept;
 
+    /** \relates Bit Inplace version of the logical "xor" operation. */
+    constexpr Bit& operator^= (Bit& a, Bit b) noexcept;
+
     /** \relates Bit Logical inversion operation. Returns `1` if given `0`, and vice versa. */
     constexpr Bit operator~ (Bit a) noexcept;
+
+    /** \relates Bit Inplace version of the logical "invert" operation. */
+    constexpr Bit& inplace_invert (Bit& a) noexcept;
 
     /** \relates Bit Returns `true`. */
     constexpr bool is01 (Bit a) noexcept;
