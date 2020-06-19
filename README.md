@@ -212,12 +212,15 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE hdltypes::hdltypes)
 ```
 
+The use of `add_subdirectory` and `FetchContent` is also supported, and uses the same `hdltypes::hdltypes` target.
+You should probably use `EXCLUDE_FROM_ALL` in the call to `add_subdirectory`.
+
 You can import the hdltypes library in your code with `include "hdltypes.hpp"`.
 All libraries are available in the `hdltypes` namespace.
 
 Example C++ source.
 ```c++
-#include "hdltypes/logic.hpp"
+#include "hdltypes.hpp"
 
 using namespace hdltypes;
 
