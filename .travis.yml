@@ -23,9 +23,14 @@ addons:
     packages:
       - g++-9
 
+env:
+  - CXX_STANDARD=14
+  - CXX_STANDARD=17
+
 install:
   - "[ $CXX = g++ ] && export CXX=g++-9 || true"  # force GCC run to use GCC 9
 
 script:
-  - cmake . && cmake --build . --target test_app
+  - cmake -DCMAKE_CXX_STANDARD=$CXX_STANDARD .
+  - cmake --build . --target test_app
   - ./test_app
