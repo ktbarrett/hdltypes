@@ -14,14 +14,14 @@ namespace hdltypes {
 
 namespace {
 
-    static constexpr bool logic_value_valid(Logic::value_type value)
+    static constexpr bool logic_value_valid(const Logic::value_type value)
     {
         return (Logic::U <= value) && (value <= Logic::DC);
     }
 
 }
 
-constexpr Logic::Logic(value_type value) noexcept : value_(value)
+constexpr Logic::Logic(const value_type value) noexcept : value_(value)
 {
     assert(logic_value_valid(value_));
 }
@@ -66,7 +66,7 @@ constexpr CharType to_char(const Logic a) noexcept
     return table[int(a.value())];
 }
 
-constexpr Logic operator ""_l (char c)
+constexpr Logic operator ""_l (const char c)
 {
     return to_logic(c);
 }
@@ -86,22 +86,22 @@ constexpr Logic to_logic(const IntType& i)
     throw std::invalid_argument("Given value is not a Logic");
 }
 
-constexpr Logic to_logic(bool b) noexcept
+constexpr Logic to_logic(const bool b) noexcept
 {
     return b ? '1'_l : '0'_l;
 }
 
-constexpr bool operator== (Logic a, Logic b) noexcept
+constexpr bool operator== (const Logic a, const Logic b) noexcept
 {
     return a.value() == b.value();
 }
 
-constexpr bool operator!= (Logic a, Logic b) noexcept
+constexpr bool operator!= (const Logic a, const Logic b) noexcept
 {
     return a.value() != b.value();
 }
 
-constexpr Logic operator& (Logic a, Logic b) noexcept
+constexpr Logic operator& (const Logic a, const Logic b) noexcept
 {
     constexpr Logic table[9][9] = {
         {'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l},  // U
@@ -117,12 +117,12 @@ constexpr Logic operator& (Logic a, Logic b) noexcept
     return table[int(a.value())][int(b.value())];
 }
 
-constexpr Logic& operator&= (Logic& a, Logic b) noexcept
+constexpr Logic& operator&= (Logic& a, const Logic b) noexcept
 {
     return (a = a & b);
 }
 
-constexpr Logic operator| (Logic a, Logic b) noexcept
+constexpr Logic operator| (const Logic a, const Logic b) noexcept
 {
     constexpr Logic table[9][9] = {
         {'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l},  // U
@@ -138,12 +138,12 @@ constexpr Logic operator| (Logic a, Logic b) noexcept
     return table[int(a.value())][int(b.value())];
 }
 
-constexpr Logic& operator|= (Logic& a, Logic b) noexcept
+constexpr Logic& operator|= (Logic& a, const Logic b) noexcept
 {
     return (a = a | b);
 }
 
-constexpr Logic operator^ (Logic a, Logic b) noexcept
+constexpr Logic operator^ (const Logic a, const Logic b) noexcept
 {
     constexpr Logic table[9][9] = {
         {'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l},  // U
@@ -159,12 +159,12 @@ constexpr Logic operator^ (Logic a, Logic b) noexcept
     return table[int(a.value())][int(b.value())];
 }
 
-constexpr Logic& operator^= (Logic& a, Logic b) noexcept
+constexpr Logic& operator^= (Logic& a, const Logic b) noexcept
 {
     return (a = a ^ b);
 }
 
-constexpr Logic operator~ (Logic a) noexcept
+constexpr Logic operator~ (const Logic a) noexcept
 {
     constexpr Logic table[9] = {
         'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l};
@@ -177,13 +177,13 @@ constexpr Logic& inplace_invert (Logic& a) noexcept
     return (a = ~a);
 }
 
-constexpr bool is01(Logic a) noexcept
+constexpr bool is01(const Logic a) noexcept
 {
     return (a == '0'_l) || (a == '1'_l);
 }
 
 template <typename IntType>
-constexpr IntType to_int(Logic a)
+constexpr IntType to_int(const Logic a)
 {
     if (a == '0'_l) {
         return 0;
@@ -193,21 +193,21 @@ constexpr IntType to_int(Logic a)
     throw std::domain_error("Logic value cannot be converted to an integer.");
 }
 
-constexpr bool to_bool(Logic a)
+constexpr bool to_bool(const Logic a)
 {
     return to_int(a);
 }
 
 namespace {
 
-    constexpr bool bit_value_valid(Bit::value_type value)
+    constexpr bool bit_value_valid(const Bit::value_type value)
     {
         return (Bit::_0 == value) || (value <= Bit::_1);
     }
 
 }
 
-constexpr Bit::Bit(value_type value) noexcept : value_(value)
+constexpr Bit::Bit(const value_type value) noexcept : value_(value)
 {
     assert(bit_value_valid(value_));
 }
@@ -237,12 +237,12 @@ constexpr CharType to_char(const Bit a) noexcept
     return (a.value() == Bit::_1) ? '1' : '0';
 }
 
-constexpr Bit operator ""_b (char c)
+constexpr Bit operator ""_b (const char c)
 {
     return to_bit(c);
 }
 
-constexpr Bit to_bit(Logic a)
+constexpr Bit to_bit(const Logic a)
 {
     if (a == '0'_l) {
         return '0'_b;
@@ -252,7 +252,7 @@ constexpr Bit to_bit(Logic a)
     throw std::domain_error("Logic value cannot be converted to Bit");
 }
 
-constexpr Logic to_logic(Bit a) noexcept
+constexpr Logic to_logic(const Bit a) noexcept
 {
     if (a == '0'_b) {
         return '0'_l;
@@ -261,7 +261,7 @@ constexpr Logic to_logic(Bit a) noexcept
     }
 }
 
-constexpr Bit::Bit(Logic a) : Bit(to_bit(a))
+constexpr Bit::Bit(const Logic a) : Bit(to_bit(a))
 {
 }
 
@@ -270,7 +270,7 @@ constexpr Bit::operator Logic() const noexcept
     return (value() == _1) ? '1'_l : '0'_l;
 }
 
-constexpr Bit to_bit(bool b) noexcept
+constexpr Bit to_bit(const bool b) noexcept
 {
     return b ? '1'_b : '0'_b;
 }
@@ -290,47 +290,47 @@ constexpr Bit to_bit(const IntType& i)
     throw std::invalid_argument("Given value is not a Bit");
 }
 
-constexpr bool operator== (Bit a, Bit b) noexcept
+constexpr bool operator== (const Bit a, const Bit b) noexcept
 {
     return a.value() == b.value();
 }
 
-constexpr bool operator!= (Bit a, Bit b) noexcept
+constexpr bool operator!= (const Bit a, const Bit b) noexcept
 {
     return a.value() != b.value();
 }
 
-constexpr Bit operator& (Bit a, Bit b) noexcept
+constexpr Bit operator& (const Bit a, const Bit b) noexcept
 {
     return to_bit((a == '1'_b) && (b == '1'_b));
 }
 
-constexpr Bit& operator&= (Bit& a, Bit b) noexcept
+constexpr Bit& operator&= (Bit& a, const Bit b) noexcept
 {
     return (a = a & b);
 }
 
-constexpr Bit operator| (Bit a, Bit b) noexcept
+constexpr Bit operator| (const Bit a, const Bit b) noexcept
 {
     return to_bit((a == '1'_b) || (b == '1'_b));
 }
 
-constexpr Bit& operator|= (Bit& a, Bit b) noexcept
+constexpr Bit& operator|= (Bit& a, const Bit b) noexcept
 {
     return (a = a | b);
 }
 
-constexpr Bit operator^ (Bit a, Bit b) noexcept
+constexpr Bit operator^ (const Bit a, const Bit b) noexcept
 {
     return to_bit(a != b);
 }
 
-constexpr Bit& operator^= (Bit& a, Bit b) noexcept
+constexpr Bit& operator^= (Bit& a, const Bit b) noexcept
 {
     return (a = a ^ b);
 }
 
-constexpr Bit operator~ (Bit a) noexcept
+constexpr Bit operator~ (const Bit a) noexcept
 {
     return to_bit(a == '0'_b);
 }
@@ -340,18 +340,18 @@ constexpr Bit& inplace_invert (Bit& a) noexcept
     return (a = ~a);
 }
 
-constexpr bool is01 (Bit a) noexcept
+constexpr bool is01 (const Bit a) noexcept
 {
     return true;
 }
 
 template <typename IntType>
-constexpr IntType to_int(Bit a) noexcept
+constexpr IntType to_int(const Bit a) noexcept
 {
     return a == '1'_b;
 }
 
-constexpr bool to_bool(Bit a) noexcept
+constexpr bool to_bool(const Bit a) noexcept
 {
     return to_int(a);
 }
