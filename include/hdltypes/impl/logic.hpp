@@ -48,8 +48,8 @@ constexpr Logic to_logic(const CharType& c)
         case 'H': return Logic(Logic::H);
         case 'h': return Logic(Logic::H);
         case '-': return Logic(Logic::DC);
+        default: throw std::invalid_argument("Given value is not a Logic");
     }
-    throw std::invalid_argument("Given value is not a Logic");
 }
 
 constexpr Logic::value_type Logic::value() const noexcept
@@ -82,8 +82,8 @@ constexpr Logic to_logic(const IntType& i)
     {
         case 0: return '0'_l;
         case 1: return '1'_l;
+        default: throw std::invalid_argument("Given value is not a Logic");
     }
-    throw std::invalid_argument("Given value is not a Logic");
 }
 
 constexpr Logic to_logic(const bool b) noexcept
@@ -189,8 +189,9 @@ constexpr IntType to_int(const Logic a)
         return 0;
     } else if (a == '1'_l) {
         return 1;
+    } else {
+        throw std::invalid_argument("Logic value cannot be converted to an integer.");
     }
-    throw std::domain_error("Logic value cannot be converted to an integer.");
 }
 
 constexpr bool to_bool(const Logic a)
@@ -221,8 +222,8 @@ constexpr Bit to_bit(const CharType& c)
     {
         case '0': return Bit(Bit::_0);
         case '1': return Bit(Bit::_1);
+        default: throw std::invalid_argument("Given value is not a Bit");
     }
-    throw std::invalid_argument("Given value is not a Bit");
 }
 
 constexpr Bit::value_type Bit::value() const noexcept
@@ -248,8 +249,9 @@ constexpr Bit to_bit(const Logic a)
         return '0'_b;
     } else if (a == '1'_l) {
         return '1'_b;
+    } else {
+        throw std::invalid_argument("Logic value cannot be converted to Bit");
     }
-    throw std::domain_error("Logic value cannot be converted to Bit");
 }
 
 constexpr Logic to_logic(const Bit a) noexcept
@@ -286,8 +288,8 @@ constexpr Bit to_bit(const IntType& i)
     {
         case 0: return '0'_b;
         case 1: return '1'_b;
+        default: throw std::invalid_argument("Given value is not a Bit");
     }
-    throw std::invalid_argument("Given value is not a Bit");
 }
 
 constexpr bool operator== (const Bit a, const Bit b) noexcept
