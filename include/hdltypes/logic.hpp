@@ -1,8 +1,9 @@
 #ifndef HDLTYPES_LOGIC_HPP
 #define HDLTYPES_LOGIC_HPP
 
-#include <cstdint>          // uint8_t
-#include <type_traits>      // enable_if, is_same, is_integral
+#include <cstdint>              // uint8_t
+#include <type_traits>          // enable_if, is_same, is_integral
+#include "hdltypes/utils.hpp"   // util::is_char_type
 
 
 namespace hdltypes {
@@ -66,31 +67,10 @@ namespace hdltypes {
             */
         explicit constexpr Logic(value_type value) noexcept;
 
-        /** Converts character values into Logic. See table below for more details.
-
-        \verbatim
-            'U'  'u'    => U
-            'X'  'x'    => X
-            '0'         => _0
-            '1'         => _1
-            'Z'  'z'    => Z
-            'W'  'w'    => W
-            'L'  'l'    => L
-            'H'  'h'    => H
-            '-'         => DC
-        \endverbatim
-            */
-        template <typename CharType>
-        static constexpr Logic deserialize(const CharType& c);
-
     public:  // attributes
 
         /** Obtain the value_type value. */
         constexpr value_type value() const noexcept;
-
-        /** Convert a Logic into a printable representation. */
-        template <typename CharType = char>
-        constexpr CharType serialize() const noexcept;
 
     private: // members
 
@@ -106,9 +86,29 @@ namespace hdltypes {
     /** \relates Logic Converts integer values `0` and `1` into Logic `0` and `1`, respectively. */
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
+        !util::is_char_type<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type = 0>
     constexpr Logic to_logic(const IntType& i);
+
+    /** Converts character values into Logic. See table below for more details.
+
+    \verbatim
+        'U'  'u'    => U
+        'X'  'x'    => X
+        '0'         => _0
+        '1'         => _1
+        'Z'  'z'    => Z
+        'W'  'w'    => W
+        'L'  'l'    => L
+        'H'  'h'    => H
+        '-'         => DC
+    \endverbatim
+        */
+    template <typename CharType, typename std::enable_if<
+        util::is_char_type<CharType>::value
+    , int>::type = 0>
+    constexpr Logic to_logic(const CharType& c);
 
     /** \relates Logic Value equality. */
     constexpr bool operator== (Logic a, Logic b) noexcept;
@@ -150,6 +150,22 @@ namespace hdltypes {
     /** \relates Logic Converts a Logic `0`/`L` or `1`/`H` to the integer `false` or `true`, respectively. */
     constexpr bool to_bool(Logic a);
 
+    /** \relates Logic Converts a Logic into a character. See the below details for the mapping.
+
+    \verbatim
+        U       => 'U'
+        X       => 'X'
+        _0      => '0'
+        _1      => '1'
+        Z       => 'Z'
+        W       => 'W'
+        L       => 'L'
+        H       => 'H'
+        DC      => '-'
+    \endverbatim
+        */
+    template <typename CharType = char>
+    constexpr CharType to_char(Logic a) noexcept;
 
     /** Bit value type
 

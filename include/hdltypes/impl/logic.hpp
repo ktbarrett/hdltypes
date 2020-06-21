@@ -1,12 +1,13 @@
 #ifndef HDLTYPES_IMPL_LOGIC_HPP
 #define HDLTYPES_IMPL_LOGIC_HPP
+#include "hdltypes/logic.hpp"
 
 #include <cstdint>          // uint8_t
 #include <type_traits>      // enable_if_t, is_same_v, is_integral
 #include <stdexcept>        // invalid_argument
 #include <cassert>
 
-#include "hdltypes/logic.hpp"
+#include "hdltypes/utils.hpp"   // is_char_type
 
 
 namespace hdltypes {
@@ -25,26 +26,28 @@ namespace hdltypes {
         assert(logic_value_valid(value_));
     }
 
-    template <typename CharType>
-    constexpr Logic Logic::deserialize(const CharType& c)
+    template <typename CharType, typename std::enable_if<
+        util::is_char_type<CharType>::value
+    , int>::type>
+    constexpr Logic to_logic(const CharType& c)
     {
         switch (c)
         {
-            case 'U': return Logic(U);
-            case 'u': return Logic(U);
-            case 'X': return Logic(X);
-            case 'x': return Logic(X);
-            case '0': return Logic(_0);
-            case '1': return Logic(_1);
-            case 'Z': return Logic(Z);
-            case 'z': return Logic(Z);
-            case 'W': return Logic(W);
-            case 'w': return Logic(W);
-            case 'L': return Logic(L);
-            case 'l': return Logic(L);
-            case 'H': return Logic(H);
-            case 'h': return Logic(H);
-            case '-': return Logic(DC);
+            case 'U': return Logic(Logic::U);
+            case 'u': return Logic(Logic::U);
+            case 'X': return Logic(Logic::X);
+            case 'x': return Logic(Logic::X);
+            case '0': return Logic(Logic::_0);
+            case '1': return Logic(Logic::_1);
+            case 'Z': return Logic(Logic::Z);
+            case 'z': return Logic(Logic::Z);
+            case 'W': return Logic(Logic::W);
+            case 'w': return Logic(Logic::W);
+            case 'L': return Logic(Logic::L);
+            case 'l': return Logic(Logic::L);
+            case 'H': return Logic(Logic::H);
+            case 'h': return Logic(Logic::H);
+            case '-': return Logic(Logic::DC);
         }
         throw std::invalid_argument("Given value is not a Logic");
     }
@@ -56,20 +59,21 @@ namespace hdltypes {
     }
 
     template <typename CharType>
-    constexpr CharType Logic::serialize() const noexcept
+    constexpr CharType to_char(const Logic a) noexcept
     {
         constexpr CharType table[9] = {
             'U', 'X', '0', '1', 'Z', 'W', 'L', 'H', '-'};
-        return table[int(value())];
+        return table[int(a.value())];
     }
 
     constexpr Logic operator ""_l (char c)
     {
-        return Logic::deserialize(c);
+        return to_logic(c);
     }
 
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
+        !util::is_char_type<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type>
     constexpr Logic to_logic(const IntType& i)
