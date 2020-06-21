@@ -4,39 +4,43 @@
 using namespace hdltypes;
 
 
-TEST_CASE("Logic serialization", "[logic]")
+TEST_CASE("Logic char conversions", "[logic]")
 {
-    REQUIRE( Logic::deserialize('U').serialize() == 'U' );
-    REQUIRE( Logic::deserialize('u').serialize() == 'U' );
-    REQUIRE( Logic::deserialize('X').serialize() == 'X' );
-    REQUIRE( Logic::deserialize('x').serialize() == 'X' );
-    REQUIRE( Logic::deserialize('0').serialize() == '0' );
-    REQUIRE( Logic::deserialize('1').serialize() == '1' );
-    REQUIRE( Logic::deserialize('Z').serialize() == 'Z' );
-    REQUIRE( Logic::deserialize('z').serialize() == 'Z' );
-    REQUIRE( Logic::deserialize('W').serialize() == 'W' );
-    REQUIRE( Logic::deserialize('w').serialize() == 'W' );
-    REQUIRE( Logic::deserialize('L').serialize() == 'L' );
-    REQUIRE( Logic::deserialize('l').serialize() == 'L' );
-    REQUIRE( Logic::deserialize('H').serialize() == 'H' );
-    REQUIRE( Logic::deserialize('h').serialize() == 'H' );
-    REQUIRE( Logic::deserialize('-').serialize() == '-' );
+    REQUIRE( to_char(to_logic('U')) == 'U' );
+    REQUIRE( to_char(to_logic('u')) == 'U' );
+    REQUIRE( to_char(to_logic('X')) == 'X' );
+    REQUIRE( to_char(to_logic('x')) == 'X' );
+    REQUIRE( to_char(to_logic('0')) == '0' );
+    REQUIRE( to_char(to_logic('1')) == '1' );
+    REQUIRE( to_char(to_logic('Z')) == 'Z' );
+    REQUIRE( to_char(to_logic('z')) == 'Z' );
+    REQUIRE( to_char(to_logic('W')) == 'W' );
+    REQUIRE( to_char(to_logic('w')) == 'W' );
+    REQUIRE( to_char(to_logic('L')) == 'L' );
+    REQUIRE( to_char(to_logic('l')) == 'L' );
+    REQUIRE( to_char(to_logic('H')) == 'H' );
+    REQUIRE( to_char(to_logic('h')) == 'H' );
+    REQUIRE( to_char(to_logic('-')) == '-' );
 
-    REQUIRE_THROWS( Logic::deserialize('8') );
-    REQUIRE_THROWS( Logic::deserialize('\0') );
+    REQUIRE_THROWS( to_logic('8') );
+    REQUIRE_THROWS( to_logic('\0') );
 }
 
-TEST_CASE("Logic conversions", "[logic]")
+TEST_CASE("Logic int conversions", "[logic]")
 {
     REQUIRE( to_int(to_logic(0)) == 0 );
     REQUIRE( to_int(to_logic(1)) == 1 );
 
+    REQUIRE_THROWS( to_int('U'_l) );
+    REQUIRE_THROWS( to_logic(2) );
+}
+
+TEST_CASE("Logic bool conversions", "[logic]")
+{
     REQUIRE( to_bool(to_logic(false)) == false );
     REQUIRE( to_bool(to_logic(true)) == true );
 
-    REQUIRE_THROWS( to_int('U'_l) );
     REQUIRE_THROWS( to_bool('U'_l) );
-    REQUIRE_THROWS( to_logic(2) );
 }
 
 TEST_CASE("Logic attributes", "[logic]")
@@ -87,21 +91,25 @@ TEST_CASE("Logic operations", "[logic]")
     }
 }
 
-TEST_CASE("Bit serialization", "[logic]")
+TEST_CASE("Bit char conversions", "[logic]")
 {
-    REQUIRE( Bit::deserialize('0').serialize() == '0' );
-    REQUIRE( Bit::deserialize('1').serialize() == '1' );
+    REQUIRE( to_char(to_bit('0')) == '0' );
+    REQUIRE( to_char(to_bit('1')) == '1' );
 
-    REQUIRE_THROWS( Bit::deserialize('\0') );
-    REQUIRE_THROWS( Bit::deserialize('X') );
+    REQUIRE_THROWS( to_bit('\0') );
+    REQUIRE_THROWS( to_bit('X') );
 }
 
-TEST_CASE("Bit conversions", "[logic]")
+TEST_CASE("Bit int conversions", "[logic]")
 {
     REQUIRE( to_bit(0) == '0'_b );
     REQUIRE( to_bit(1) == '1'_b );
-    REQUIRE_THROWS( to_bit(123) );
 
+    REQUIRE_THROWS( to_bit(123) );
+}
+
+TEST_CASE("Bit bool conversions", "[logic]")
+{
     REQUIRE( to_bit(false) == '0'_b );
     REQUIRE( to_bit(true) == '1'_b );
 }
