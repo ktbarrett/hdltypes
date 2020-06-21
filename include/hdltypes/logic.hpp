@@ -10,7 +10,7 @@ namespace hdltypes {
 
     /* DESIGN NOTES
      * It would simply be too convenient to support methods on enums to implement enumerated datatypes. Thank you, C++.
-        Instead, we make classes that encapsulate internally defined "value_type" enums and offer a method, `.value()`
+        Instead, we make classes that encapsulate internally defined "value_type" enums and offer a method, `.value()`,
         to obtain the stored enum.
      * In VHDL Bit could be a Logic subtype, but we have no way to describe that relationship in C++. We could use
         dependent types, which VHDL also has, but C++ still does not... Inheritance here has issues; slicing is not safe
@@ -22,8 +22,8 @@ namespace hdltypes {
 
     /** Logic value type
 
-        This effectively models VHDL's std_ulogic type. Values of this type are immutable.
-        See value_type for details on the values of this type.
+        This effectively models VHDL's std_ulogic type. See value_type for details on the
+        values of this type.
 
         This type supports logical operations "and", "or", "xor", and inversion. Can be
         converted "from" and "to" int or bool representations of Logic values. Also
