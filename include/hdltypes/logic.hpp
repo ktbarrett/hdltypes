@@ -199,24 +199,10 @@ namespace hdltypes {
             */
         explicit constexpr Bit(value_type value) noexcept;
 
-        /** Converts character values into Logic. See table below for more details.
-
-        \verbatim
-            '0'      => _0
-            '1'      => _1
-        \endverbatim
-            */
-        template <typename CharType>
-        static constexpr Bit deserialize(const CharType& c);
-
     public:  // attributes
 
         /** Obtain the value_type value. */
         constexpr value_type value() const noexcept;
-
-        /** Convert a Bit into a printable representation. */
-        template <typename CharType = char>
-        constexpr CharType serialize() const noexcept;
 
     public:  // Logic conversion
 
@@ -240,9 +226,22 @@ namespace hdltypes {
     /** \relates Bit Converts integer values `0` and `1` into Bit `0` and `1`, respectively. */
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
+        !util::is_char_type<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type = 0>
     constexpr Bit to_bit(const IntType& i);
+
+    /** Converts character values into Logic. See table below for more details.
+
+    \verbatim
+        '0'      => _0
+        '1'      => _1
+    \endverbatim
+        */
+    template <typename CharType, typename std::enable_if<
+        util::is_char_type<CharType>::value
+    , int>::type = 0>
+    static constexpr Bit to_bit(const CharType& c);
 
     /** \relates Bit Converts the Logic values `0` and `1` to Bit `0` and `1`, respectively. */
     constexpr Bit to_bit(Logic a);
@@ -289,6 +288,10 @@ namespace hdltypes {
 
     /** \relates Bit Converts a Bit `0` or `1` to the boolean `false` or `true`, respectively. */
     constexpr bool to_bool(Bit a) noexcept;
+
+    /** \relates Bit Converts a Bit `0` or `1` to the characters `'0'` and `'1'`, respectively. */
+    template <typename CharType = char>
+    constexpr CharType to_char(const Bit a) noexcept;
 
 }
 

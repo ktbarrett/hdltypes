@@ -212,13 +212,15 @@ namespace hdltypes {
         assert(bit_value_valid(value_));
     }
 
-    template <typename CharType>
-    constexpr Bit Bit::deserialize(const CharType& c)
+    template <typename CharType, typename std::enable_if<
+        util::is_char_type<CharType>::value
+    , int>::type>
+    constexpr Bit to_bit(const CharType& c)
     {
         switch (c)
         {
-            case '0': return Bit(_0);
-            case '1': return Bit(_1);
+            case '0': return Bit(Bit::_0);
+            case '1': return Bit(Bit::_1);
         }
         throw std::invalid_argument("Given value is not a Bit");
     }
@@ -230,14 +232,14 @@ namespace hdltypes {
     }
 
     template <typename CharType>
-    constexpr CharType Bit::serialize() const noexcept
+    constexpr CharType to_char(const Bit a) noexcept
     {
-        return (value() == _1) ? '1' : '0';
+        return (a.value() == Bit::_1) ? '1' : '0';
     }
 
     constexpr Bit operator ""_b (char c)
     {
-        return Bit::deserialize(c);
+        return to_bit(c);
     }
 
     constexpr Bit to_bit(Logic a)
@@ -275,6 +277,7 @@ namespace hdltypes {
 
     template <typename IntType, typename std::enable_if<
         std::is_integral<IntType>::value &&
+        !util::is_char_type<IntType>::value &&
         !std::is_same<IntType, bool>::value
     , int>::type>
     constexpr Bit to_bit(const IntType& i)
