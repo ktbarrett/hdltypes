@@ -110,6 +110,9 @@ namespace hdltypes {
     , int>::type = 0>
     constexpr Logic to_logic(const CharType& c);
 
+    /** \relates Logic Returns the given Logic. */
+    constexpr Logic to_logic (Logic a) noexcept;
+
     /** \relates Logic Value equality. */
     constexpr bool operator== (Logic a, Logic b) noexcept;
 
@@ -245,6 +248,9 @@ namespace hdltypes {
 
     /** \relates Bit Converts the Logic values `0` and `1` to Bit `0` and `1`, respectively. */
     constexpr Bit to_bit(Logic a);
+
+    /** \relates Bit Returns the given Bit. */
+    constexpr Bit to_bit(Bit a) noexcept;
 
     /** \relates Logic converts the Bit values `0` and `1` to Logic `0` and `1`, respectively. */
     constexpr Logic to_logic(Bit a) noexcept;
