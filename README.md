@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/ktbarrett/hdltypes.svg?branch=master)](https://travis-ci.org/ktbarrett/hdltypes)
+[![Documentation Status](https://readthedocs.org/projects/hdltypes/badge/?version=latest)](https://hdltypes.readthedocs.io/en/latest/?badge=latest)
+
 
 # hdltypes
 
