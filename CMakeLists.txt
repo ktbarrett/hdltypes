@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 
+file(READ "${CMAKE_CURRENT_LIST_DIR}/version" hdltypes_VERSION)
+
 project(
   hdltypes
-  VERSION 0.0.0
+  VERSION "${hdltypes_VERSION}"
   LANGUAGES CXX
   DESCRIPTION "C++ and Python datatype library based on VHDL's types"
   HOMEPAGE_URL "https://github.com/ktbarrett/hdltypes")
