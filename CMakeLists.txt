@@ -46,6 +46,7 @@ install(
 
 install(DIRECTORY "${${PROJECT_NAME}_SOURCE_DIR}/include/"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+
 install(DIRECTORY "${${PROJECT_NAME}_BINARY_DIR}/include/"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
@@ -60,7 +61,7 @@ write_basic_package_version_file(
   COMPATIBILITY ExactVersion)
 
 configure_package_config_file(
-  "${${PROJECT_NAME}_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+  "${${PROJECT_NAME}_SOURCE_DIR}/templates/${PROJECT_NAME}Config.cmake.in"
   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
   INSTALL_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake")
 
