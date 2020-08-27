@@ -15,19 +15,26 @@ include(FetchContent)
 
 add_library(${PROJECT_NAME} INTERFACE)
 
+configure_file(
+  "${${PROJECT_NAME}_SOURCE_DIR}/templates/include/hdltypes/version.hpp.in"
+  "${${PROJECT_NAME}_BINARY_DIR}/include/hdltypes/version.hpp")
+
 target_sources(
   ${PROJECT_NAME}
   INTERFACE
     $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes.hpp>
+    $<BUILD_INTERFACE:${${PROJECT_NAME}_BINARY_DIR}/include/hdltypes/version.hpp>
     $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes/logic.hpp>
     $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include/hdltypes/impl/logic.hpp>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes.hpp>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/version.hpp>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/logic.hpp>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hdltypes/impl/logic.hpp>)
 
 target_include_directories(
   ${PROJECT_NAME}
   INTERFACE $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${${PROJECT_NAME}_BINARY_DIR}/include>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
@@ -38,6 +45,8 @@ install(
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(DIRECTORY "${${PROJECT_NAME}_SOURCE_DIR}/include/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(DIRECTORY "${${PROJECT_NAME}_BINARY_DIR}/include/"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 install(
