@@ -26,7 +26,7 @@ We list each of the core datatypes and their main features below.
 
 #### `Logic`
 
-Can represent `0`, `1`, high impedance (`Z`), weak values (`L` and `H`), or indeterminate values (`X`, `U`, and `-`) that can occur in hardware.
+Can represent `0`, `1`, high impedance (`Z`), weak values (`L`, `H`, and `W`), or indeterminate values (`X`, `U`, and `-`) that can occur in hardware.
 Supports logic operations like "and", "or", "xor", and "negate".
 
 Equivalent to VHDL's `std_logic`.
