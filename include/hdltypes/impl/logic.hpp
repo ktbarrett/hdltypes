@@ -352,7 +352,7 @@ constexpr Bit& inplace_invert (Bit& a) noexcept
     return (a = ~a);
 }
 
-constexpr bool is01 (const Bit a) noexcept
+constexpr bool is01 (const Bit) noexcept
 {
     return true;
 }
