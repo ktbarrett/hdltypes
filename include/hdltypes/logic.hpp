@@ -24,9 +24,9 @@ namespace hdltypes {
     This effectively models VHDL's std_ulogic type. See value_type for details on the
     values of this type.
 
-    This type supports logical operations "and", "or", "xor", and inversion. Can be
-    converted "from" and "to" int or bool representations of Logic values. Also
-    supports (de)serialization from printable characters values.
+    This type supports logical operations "and", "or", "xor", and inversion.
+    Can be converted "from" and "to" int or bool representations of Logic values.
+    Supports serialization and deserialization as well.
 
     Like VHDL:
       * weak value when operated on become strong (due to implicit buffering)
@@ -46,7 +46,7 @@ public:  // types
         X,  ///< Unknown. Typically a result of doing operations on non-0/1 values.
         _0, ///< 0
         _1, ///< 1
-        Z,  ///< High Impedance. Useful for modelling pull-ups and pull-downs.
+        Z,  ///< High Impedance. Useful for modeling pull-ups and pull-downs.
         W,  ///< Weak Unknown. Like X, but the value is weak.
         L,  ///< Weak 0. Like 0, but the value is weak.
         H,  ///< Weak 1. Like 1, but the value is weak.
@@ -76,7 +76,7 @@ private: // members
     value_type value_ {U};
 };
 
-/** \relates Logic UDL convience syntax for Logic::deserialize. */
+/** \relates Logic UDL convenience syntax for Logic::deserialize. */
 constexpr Logic operator ""_l (char c);
 
 /** \relates Logic Converts bool values `false` and `true` to Logic `0` and `1`, respectively. */
@@ -93,15 +93,15 @@ constexpr Logic to_logic(const IntType& i);
 /** \relates Logic Converts character values into Logic. See table below for more details.
 
 \verbatim
-    'U'  'u'    => U
-    'X'  'x'    => X
-    '0'         => _0
-    '1'         => _1
-    'Z'  'z'    => Z
-    'W'  'w'    => W
-    'L'  'l'    => L
-    'H'  'h'    => H
-    '-'         => DC
+'U'  'u'    => U
+'X'  'x'    => X
+'0'         => _0
+'1'         => _1
+'Z'  'z'    => Z
+'W'  'w'    => W
+'L'  'l'    => L
+'H'  'h'    => H
+'-'         => DC
 \endverbatim
     */
 template <typename CharType, typename std::enable_if<
@@ -115,7 +115,7 @@ constexpr Logic to_logic (Logic a) noexcept;
 /** \relates Logic Value equality. */
 constexpr bool operator== (Logic a, Logic b) noexcept;
 
-/** \relates Logic Value inqueality. */
+/** \relates Logic Value inequality. */
 constexpr bool operator!= (Logic a, Logic b) noexcept;
 
 /** \relates Logic Logical "and" operation. See implementation for details. */
@@ -155,15 +155,15 @@ constexpr bool to_bool(Logic a);
 /** \relates Logic Converts a Logic into a character. See the below details for the mapping.
 
 \verbatim
-    U       => 'U'
-    X       => 'X'
-    _0      => '0'
-    _1      => '1'
-    Z       => 'Z'
-    W       => 'W'
-    L       => 'L'
-    H       => 'H'
-    DC      => '-'
+U       => 'U'
+X       => 'X'
+_0      => '0'
+_1      => '1'
+Z       => 'Z'
+W       => 'W'
+L       => 'L'
+H       => 'H'
+DC      => '-'
 \endverbatim
     */
 template <typename CharType = char>
@@ -236,8 +236,8 @@ constexpr Bit to_bit(const IntType& i);
 /** \relates Bit Converts character values into Logic. See table below for more details.
 
 \verbatim
-    '0'      => _0
-    '1'      => _1
+'0'      => _0
+'1'      => _1
 \endverbatim
     */
 template <typename CharType, typename std::enable_if<
@@ -257,31 +257,31 @@ constexpr Logic to_logic(Bit a) noexcept;
 /** \relates Bit Value equality. */
 constexpr bool operator== (Bit a, Bit b) noexcept;
 
-/** \relates Bit Value inqueality. */
+/** \relates Bit Value inequality. */
 constexpr bool operator!= (Bit a, Bit b) noexcept;
 
 /** \relates Bit Logical "and" operation. Returns `1` if both arguments are `1`. */
 constexpr Bit operator& (Bit a, Bit b) noexcept;
 
-/** \relates Bit Inplace version of the logical "and" operation. */
+/** \relates Bit In-place version of the logical "and" operation. */
 constexpr Bit& operator&= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical "or" operation. Returns `1` if either arguments are `1`. */
 constexpr Bit operator| (Bit a, Bit b) noexcept;
 
-/** \relates Bit Inplace version of the logical "or" operation. */
+/** \relates Bit In-place version of the logical "or" operation. */
 constexpr Bit& operator|= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical "xor" operation. Returns `1` if arguments aren't equivalent. */
 constexpr Bit operator^ (Bit a, Bit b) noexcept;
 
-/** \relates Bit Inplace version of the logical "xor" operation. */
+/** \relates Bit In-place version of the logical "xor" operation. */
 constexpr Bit& operator^= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical inversion operation. Returns `1` if given `0`, and vice versa. */
 constexpr Bit operator~ (Bit a) noexcept;
 
-/** \relates Bit Inplace version of the logical "invert" operation. */
+/** \relates Bit In-place version of the logical "invert" operation. */
 constexpr Bit& inplace_invert (Bit& a) noexcept;
 
 /** \relates Bit Returns `true`. */
