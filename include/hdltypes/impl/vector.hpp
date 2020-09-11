@@ -146,8 +146,7 @@ VectorConstView<value_type> VectorView<value_type>::operator() (bound_type left,
 
 template <typename value_type>
 template <typename Iterator, typename std::enable_if<
-    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value &&
-    true
+    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
 , int>::type>
 VectorView<value_type> & VectorView<value_type>::assign (Iterator const & start, Iterator const & end)
 {
@@ -162,9 +161,8 @@ VectorView<value_type> & VectorView<value_type>::assign (Iterator const & start,
 
 template <typename value_type>
 template <typename Iterable, typename std::enable_if<
-    // util::is_iterable<Iterable>::value &&
-    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value &&
-    true
+    util::is_iterable<Iterable>::value &&
+    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
 , int>::type>
 VectorView<value_type> & VectorView<value_type>::assign (Iterable const & it)
 {

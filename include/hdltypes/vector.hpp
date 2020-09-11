@@ -89,21 +89,19 @@ public: // assignment
     VectorView<value_type> & operator= (VectorView<value_type> const &) = delete;
     VectorView<value_type> & operator= (VectorView<value_type> &&) = delete;
     template <typename Iterator, typename std::enable_if<
-        std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value &&
-        true
+        std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
     , int>::type = 0>
     VectorView<value_type> & assign (Iterator const & start, Iterator const & end);
     template <typename Iterable, typename std::enable_if<
-        //util::is_iterable<Iterable>::value &&
-        std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value &&
-        true
+        util::is_iterable<Iterable>::value &&
+        std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
     , int>::type = 0>
     VectorView<value_type> & assign (Iterable const & it);
-    template <typename Iterable, typename std::enable_if<
-        //util::is_iterable<Iterable>::value &&
-        std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value &&
-        true
+    template <typename T, std::size_t N, typename std::enable_if<
+        std::is_convertible<T, value_type>::value
     , int>::type = 0>
+    VectorView<value_type> & assign (T const (&array)[N]) { return assign(std::begin(array), std::end(array)); }
+    template <typename Iterable>
     VectorView<value_type> & operator= (Iterable const & it) { return assign(it); }
 public: // iteration
     auto begin() noexcept;
