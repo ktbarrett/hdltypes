@@ -287,8 +287,59 @@ TEST_CASE("Vector iteration", "[vector]")
     }
 }
 
-
-TEST_CASE("Vector conversions", "[vector]")
+TEST_CASE("Convert iterable to vector", "[vector]")
 {
+    std::string const s {"example"};
+    SECTION("Infered bounds") {
+        auto v = to_vector<int>(s);
+        REQUIRE((std::size_t)v.length() == s.size());
+        REQUIRE(v.left() == 1);
+        REQUIRE(v(4) == 'm');
+    }
+    SECTION("Supplied bounds") {
+        REQUIRE_THROWS(to_vector<char>(1, 8, s));
+        auto v = to_vector<char>(s.size()-1, 0, s);
+        REQUIRE(v.right() == 0);
+        REQUIRE((std::size_t)v.length() == s.size());
+        REQUIRE(v(0) == 'e');
+    }
 }
 
+TEST_CASE("Convert iterator pair to vector", "[vector]")
+{
+    std::string const s {"example"};
+    auto const begin = s.begin();
+    auto const end = s.end();
+    SECTION("Infered bounds") {
+        auto v = to_vector<int>(begin, end);
+        REQUIRE((std::size_t)v.length() == s.size());
+        REQUIRE(v.left() == 1);
+        REQUIRE(v(4) == 'm');
+    }
+    SECTION("Supplied bounds") {
+        REQUIRE_THROWS(to_vector<char>(1, 8, begin, end));
+        auto v = to_vector<char>(s.size()-1, 0, begin, end);
+        REQUIRE(v.right() == 0);
+        REQUIRE((std::size_t)v.length() == s.size());
+        REQUIRE(v(0) == 'e');
+    }
+}
+
+TEST_CASE("Convert array to vector", "[vector]")
+{
+    constexpr int N = 4;
+    std::int8_t const wow[N] = {5, 6, 4, 3};
+    SECTION("Infered bounds") {
+        auto v = to_vector<long>(wow);
+        REQUIRE(v.length() == N);
+        REQUIRE(v.left() == 1);
+        REQUIRE(v(1) == 5);
+    }
+    SECTION("Supplied bounds") {
+        REQUIRE_THROWS(to_vector<long>(1, 8, wow));
+        auto v = to_vector<long>(N-1, 0, wow);
+        REQUIRE(v.right() == 0);
+        REQUIRE(v.length() == N);
+        REQUIRE(v(0) == 3);
+    }
+}

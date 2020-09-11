@@ -21,6 +21,75 @@ Vector<value_type>::Vector(bound_type left, bound_type right)
 {
 }
 
+template <typename value_type, typename Iterator, typename std::enable_if<
+    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
+, int>::type>
+Vector<value_type> to_vector(bound_type left, bound_type right, Iterator const & start, Iterator const & end)
+{
+    auto r = Vector<value_type>(left, right);
+    #ifndef HDLTYPES_NO_BOUNDS_CHECK
+    if (std::distance(start, end) != r.length()) {
+        throw std::invalid_argument("Initializer length doesn't match Vector length");
+    }
+    #endif
+    std::copy(start, end, r.begin());
+    return r;
+}
+
+template <typename value_type, typename Iterator, typename std::enable_if<
+    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
+, int>::type>
+Vector<value_type> to_vector(Iterator const & start, Iterator const & end)
+{
+    auto r = Vector<value_type>(1, std::distance(start, end));
+    std::copy(start, end, r.begin());
+    return r;
+}
+
+template <typename value_type, typename Iterable, typename std::enable_if<
+    util::is_iterable<Iterable>::value &&
+    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
+, int>::type>
+Vector<value_type> to_vector(Iterable const & it)
+{
+    auto r = Vector<value_type>(1, std::distance(std::begin(it), std::end(it)));
+    std::copy(std::begin(it), std::end(it), r.begin());
+    return r;
+}
+
+template <typename value_type, typename Iterable, typename std::enable_if<
+    util::is_iterable<Iterable>::value &&
+    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
+, int>::type>
+Vector<value_type> to_vector(bound_type left, bound_type right, Iterable const & it)
+{
+    auto r = Vector<value_type>(left, right);
+    #ifndef HDLTYPES_NO_BOUNDS_CHECK
+    if (std::distance(std::begin(it), std::end(it)) != r.length()) {
+        throw std::invalid_argument("Initializer length doesn't match Vector length");
+    }
+    #endif
+    std::copy(std::begin(it), std::end(it), r.begin());
+    return r;
+}
+
+template <typename value_type, typename T, std::size_t N, typename std::enable_if<
+    std::is_convertible<T, value_type>::value
+, int>::type>
+Vector<value_type> to_vector (T const (&array)[N])
+{
+    return to_vector<value_type>(std::begin(array), std::end(array));
+}
+
+template <typename value_type, typename T, std::size_t N, typename std::enable_if<
+    std::is_convertible<T, value_type>::value
+, int>::type>
+Vector<value_type> to_vector (bound_type left, bound_type right, T const (&array)[N])
+{
+    return to_vector<value_type>(left, right, std::begin(array), std::end(array));
+}
+
+
 template <typename value_type>
 auto Vector<value_type>::index_helper(bound_type i) const -> bound_type
 {
