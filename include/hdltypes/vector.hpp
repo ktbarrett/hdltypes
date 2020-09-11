@@ -26,6 +26,39 @@ template <typename value_type>
 class VectorConstView;
 
 
+template <typename value_type, typename Iterator, typename std::enable_if<
+    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector(bound_type left, bound_type right, Iterator const & start, Iterator const & end);
+
+template <typename value_type, typename Iterator, typename std::enable_if<
+    std::is_convertible<decltype(*std::declval<Iterator>()), value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector(Iterator const & start, Iterator const & end);
+
+template <typename value_type, typename Iterable, typename std::enable_if<
+    util::is_iterable<Iterable>::value &&
+    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector(Iterable const & it);
+
+template <typename value_type, typename Iterable, typename std::enable_if<
+    util::is_iterable<Iterable>::value &&
+    std::is_convertible<decltype(*std::begin(std::declval<Iterable&>())), value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector(bound_type left, bound_type right, Iterable const & it);
+
+template <typename value_type, typename T, std::size_t N, typename std::enable_if<
+    std::is_convertible<T, value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector (T const (&array)[N]);
+
+template <typename value_type, typename T, std::size_t N, typename std::enable_if<
+    std::is_convertible<T, value_type>::value
+, int>::type = 0>
+Vector<value_type> to_vector (bound_type left, bound_type right, T const (&array)[N]);
+
+
 template <typename value_type_>
 class Vector {
 public: // types
