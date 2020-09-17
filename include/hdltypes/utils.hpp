@@ -2,6 +2,14 @@
 #define HDLTYPES_UTIL_HPP
 
 #include <type_traits>  // false_type, true_type
+#include <cstdint>      // int32_t
+
+namespace hdltypes {
+
+/** Type for bounds of vector-like objects */
+using bound_type = std::int32_t;
+
+}
 
 namespace hdltypes { namespace util {
 
