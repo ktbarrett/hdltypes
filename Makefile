@@ -1,4 +1,7 @@
 # project automation makefile
+# this was only ever intended for the developer and *not* for official use
+# in CI or distribution. If that level of PA is required, a cross-platform
+# solution should be developed. gh-27
 
 .PHONY:
 	configure
