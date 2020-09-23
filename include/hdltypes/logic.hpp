@@ -122,25 +122,25 @@ constexpr bool operator!= (Logic a, Logic b) noexcept;
 constexpr Logic operator& (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "and" operation. */
-Logic& operator&= (Logic& a, Logic b) noexcept;
+inline Logic& operator&= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical "or" operation. See implementation for details. */
 constexpr Logic operator| (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "or" operation. */
-Logic& operator|= (Logic& a, Logic b) noexcept;
+inline Logic& operator|= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical "xor" operation. See implementation for details. */
 constexpr Logic operator^ (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "xor" operation. */
-Logic& operator^= (Logic& a, Logic b) noexcept;
+inline Logic& operator^= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical inversion operation. See implementation for details. */
 constexpr Logic operator~ (Logic a) noexcept;
 
 /** \relates Logic Inplace version of the logical "invert" operation. */
-Logic& inplace_invert (Logic& a) noexcept;
+inline Logic& inplace_invert (Logic& a) noexcept;
 
 /** \relates Logic Returns `true` if the value is `0` or `1`. */
 constexpr bool is01 (Logic a) noexcept;

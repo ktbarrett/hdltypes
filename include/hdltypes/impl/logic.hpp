@@ -159,7 +159,7 @@ constexpr Logic operator& (const Logic a, const Logic b) noexcept
     return and_table[int(a.value())][int(b.value())];
 }
 
-Logic& operator&= (Logic& a, const Logic b) noexcept
+inline Logic& operator&= (Logic& a, const Logic b) noexcept
 {
     return (a = a & b);
 }
@@ -169,7 +169,7 @@ constexpr Logic operator| (const Logic a, const Logic b) noexcept
     return or_table[int(a.value())][int(b.value())];
 }
 
-Logic& operator|= (Logic& a, const Logic b) noexcept
+inline Logic& operator|= (Logic& a, const Logic b) noexcept
 {
     return (a = a | b);
 }
@@ -179,7 +179,7 @@ constexpr Logic operator^ (const Logic a, const Logic b) noexcept
     return xor_table[int(a.value())][int(b.value())];
 }
 
-Logic& operator^= (Logic& a, const Logic b) noexcept
+inline Logic& operator^= (Logic& a, const Logic b) noexcept
 {
     return (a = a ^ b);
 }
@@ -189,7 +189,7 @@ constexpr Logic operator~ (const Logic a) noexcept
     return not_table[int(a.value())];
 }
 
-Logic& inplace_invert (Logic& a) noexcept
+inline Logic& inplace_invert (Logic& a) noexcept
 {
     return (a = ~a);
 }
