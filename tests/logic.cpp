@@ -51,6 +51,11 @@ TEST_CASE("Logic/Bit conversions", "[logic]")
     REQUIRE( to_bit('1'_b) == '1'_b );
 
     REQUIRE_THROWS( to_bit('U'_l) );
+
+    REQUIRE_NOTHROW( Bit('0'_l) );
+    REQUIRE_THROWS( Bit('U'_l) );
+
+    REQUIRE_NOTHROW( Logic('0'_b));
 }
 
 TEST_CASE("Logic attributes", "[logic]")
@@ -112,16 +117,16 @@ TEST_CASE("Bit char conversions", "[logic]")
 
 TEST_CASE("Bit int conversions", "[logic]")
 {
-    REQUIRE( to_bit(0) == '0'_b );
-    REQUIRE( to_bit(1) == '1'_b );
+    REQUIRE( to_int(to_bit(0)) == 0 );
+    REQUIRE( to_int(to_bit(1)) == 1 );
 
     REQUIRE_THROWS( to_bit(123) );
 }
 
 TEST_CASE("Bit bool conversions", "[logic]")
 {
-    REQUIRE( to_bit(false) == '0'_b );
-    REQUIRE( to_bit(true) == '1'_b );
+    REQUIRE( to_bool(to_bit(false)) == false );
+    REQUIRE( to_bool(to_bit(true)) == true );
 }
 
 TEST_CASE("Bit attributes", "[logic]")
