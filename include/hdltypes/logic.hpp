@@ -3,7 +3,7 @@
 
 #include <cstdint>              // uint8_t
 #include <type_traits>          // enable_if, is_same
-#include "hdltypes/utils.hpp"   // is_char_type, is_integer_type
+#include <hdltypes/utils.hpp>   // is_char_type, is_integer_type
 
 
 namespace hdltypes {
@@ -13,7 +13,7 @@ namespace hdltypes {
     Instead, we make classes that encapsulate internally defined "value_type" enums and offer a method, `.value()`, to obtain the stored enum.
  * In VHDL Bit could be a Logic subtype, but we have no way to describe that relationship in C++.
     Using Inheritance here has issues;
-    slicing is not safe since it may put a child Bit into an invalid state because technically Bit has additional invariants.
+    slicing is not safe since it may put a child Bit into an invalid state because Bit is narrower.
     Instead, Bit is just-another-type that relates to Logic through constructors and casts.
     These constructors and casts have carefully placed `explicit` so we get implicit casting to wider types (Bit -> Logic).
     Other Logic-like types should follow the same recipe as Bit.
@@ -122,25 +122,25 @@ constexpr bool operator!= (Logic a, Logic b) noexcept;
 constexpr Logic operator& (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "and" operation. */
-constexpr Logic& operator&= (Logic& a, Logic b) noexcept;
+Logic& operator&= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical "or" operation. See implementation for details. */
 constexpr Logic operator| (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "or" operation. */
-constexpr Logic& operator|= (Logic& a, Logic b) noexcept;
+Logic& operator|= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical "xor" operation. See implementation for details. */
 constexpr Logic operator^ (Logic a, Logic b) noexcept;
 
 /** \relates Logic Inplace version of the logical "xor" operation. */
-constexpr Logic& operator^= (Logic& a, Logic b) noexcept;
+Logic& operator^= (Logic& a, Logic b) noexcept;
 
 /** \relates Logic Logical inversion operation. See implementation for details. */
 constexpr Logic operator~ (Logic a) noexcept;
 
 /** \relates Logic Inplace version of the logical "invert" operation. */
-constexpr Logic& inplace_invert (Logic& a) noexcept;
+Logic& inplace_invert (Logic& a) noexcept;
 
 /** \relates Logic Returns `true` if the value is `0` or `1`. */
 constexpr bool is01 (Logic a) noexcept;
@@ -264,25 +264,25 @@ constexpr bool operator!= (Bit a, Bit b) noexcept;
 constexpr Bit operator& (Bit a, Bit b) noexcept;
 
 /** \relates Bit In-place version of the logical "and" operation. */
-constexpr Bit& operator&= (Bit& a, Bit b) noexcept;
+Bit& operator&= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical "or" operation. Returns `1` if either arguments are `1`. */
 constexpr Bit operator| (Bit a, Bit b) noexcept;
 
 /** \relates Bit In-place version of the logical "or" operation. */
-constexpr Bit& operator|= (Bit& a, Bit b) noexcept;
+Bit& operator|= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical "xor" operation. Returns `1` if arguments aren't equivalent. */
 constexpr Bit operator^ (Bit a, Bit b) noexcept;
 
 /** \relates Bit In-place version of the logical "xor" operation. */
-constexpr Bit& operator^= (Bit& a, Bit b) noexcept;
+Bit& operator^= (Bit& a, Bit b) noexcept;
 
 /** \relates Bit Logical inversion operation. Returns `1` if given `0`, and vice versa. */
 constexpr Bit operator~ (Bit a) noexcept;
 
 /** \relates Bit In-place version of the logical "invert" operation. */
-constexpr Bit& inplace_invert (Bit& a) noexcept;
+Bit& inplace_invert (Bit& a) noexcept;
 
 /** \relates Bit Returns `true`. */
 constexpr bool is01 (Bit a) noexcept;
@@ -300,6 +300,6 @@ constexpr CharType to_char(const Bit a) noexcept;
 
 }
 
-#include "hdltypes/impl/logic.hpp"
+#include <hdltypes/impl/logic.hpp>
 
 #endif

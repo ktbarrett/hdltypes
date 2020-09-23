@@ -7,7 +7,8 @@
 #include <stdexcept>        // invalid_argument
 #include <cassert>
 
-#include "hdltypes/utils.hpp"   // is_char_type, is_integer_type
+#include <hdltypes/logic.hpp>   // Logic, Bit, to_logic, to_bit, to_char, to_bool, to_int
+#include <hdltypes/utils.hpp>   // is_char_type, is_integer_type, X_ASSERT
 
 
 namespace hdltypes {
@@ -21,9 +22,9 @@ namespace {
 
 }
 
-constexpr Logic::Logic(const value_type value) noexcept : value_(value)
+constexpr Logic::Logic(const value_type value) noexcept
+  : value_((X_ASSERT(logic_value_valid(value)), value))
 {
-    assert(logic_value_valid(value_));
 }
 
 template <typename CharType, typename std::enable_if<
@@ -31,39 +32,44 @@ template <typename CharType, typename std::enable_if<
 , int>::type>
 constexpr Logic to_logic(const CharType& c)
 {
-    switch (c)
-    {
-        case 'U': return Logic(Logic::U);
-        case 'u': return Logic(Logic::U);
-        case 'X': return Logic(Logic::X);
-        case 'x': return Logic(Logic::X);
-        case '0': return Logic(Logic::_0);
-        case '1': return Logic(Logic::_1);
-        case 'Z': return Logic(Logic::Z);
-        case 'z': return Logic(Logic::Z);
-        case 'W': return Logic(Logic::W);
-        case 'w': return Logic(Logic::W);
-        case 'L': return Logic(Logic::L);
-        case 'l': return Logic(Logic::L);
-        case 'H': return Logic(Logic::H);
-        case 'h': return Logic(Logic::H);
-        case '-': return Logic(Logic::DC);
-        default: throw std::invalid_argument("Given value is not a Logic");
-    }
+    return
+        c == 'U' ? Logic(Logic::U) :
+        c == 'u' ? Logic(Logic::U) :
+        c == 'X' ? Logic(Logic::X) :
+        c == 'x' ? Logic(Logic::X) :
+        c == '0' ? Logic(Logic::_0) :
+        c == '1' ? Logic(Logic::_1) :
+        c == 'Z' ? Logic(Logic::Z) :
+        c == 'z' ? Logic(Logic::Z) :
+        c == 'W' ? Logic(Logic::W) :
+        c == 'w' ? Logic(Logic::W) :
+        c == 'L' ? Logic(Logic::L) :
+        c == 'l' ? Logic(Logic::L) :
+        c == 'H' ? Logic(Logic::H) :
+        c == 'h' ? Logic(Logic::H) :
+        c == '-' ? Logic(Logic::DC) :
+        throw std::invalid_argument("Given value is not a Logic");
 }
 
 constexpr Logic::value_type Logic::value() const noexcept
 {
-    assert(logic_value_valid(value_));
-    return value_;
+    return (X_ASSERT(logic_value_valid(value_)), value_);
 }
 
 template <typename CharType>
 constexpr CharType to_char(const Logic a) noexcept
 {
-    constexpr CharType table[9] = {
-        'U', 'X', '0', '1', 'Z', 'W', 'L', 'H', '-'};
-    return table[int(a.value())];
+    return
+        a.value() == Logic::U ? 'U' :
+        a.value() == Logic::X ? 'X' :
+        a.value() == Logic::_0 ? '0' :
+        a.value() == Logic::_1 ? '1' :
+        a.value() == Logic::Z ? 'Z' :
+        a.value() == Logic::W ? 'W' :
+        a.value() == Logic::L ? 'L' :
+        a.value() == Logic::H ? 'H' :
+        a.value() == Logic::DC ? '-' :
+        '\0';
 }
 
 constexpr Logic operator ""_l (const char c)
@@ -78,12 +84,10 @@ template <typename IntType, typename std::enable_if<
 , int>::type>
 constexpr Logic to_logic(const IntType& i)
 {
-    switch (i)
-    {
-        case 0: return '0'_l;
-        case 1: return '1'_l;
-        default: throw std::invalid_argument("Given value is not a Logic");
-    }
+    return
+        i == 0 ? '0'_l :
+        i == 1 ? '1'_l :
+        throw std::invalid_argument("Given value is not a Logic");
 }
 
 constexpr Logic to_logic(const bool b) noexcept
@@ -106,9 +110,9 @@ constexpr bool operator!= (const Logic a, const Logic b) noexcept
     return a.value() != b.value();
 }
 
-constexpr Logic operator& (const Logic a, const Logic b) noexcept
-{
-    constexpr Logic table[9][9] = {
+namespace {
+
+    constexpr Logic and_table[9][9] = {
         {'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l, 'U'_l, '0'_l, 'U'_l, 'U'_l},  // U
         {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l},  // X
         {'0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l, '0'_l},  // 0
@@ -119,17 +123,8 @@ constexpr Logic operator& (const Logic a, const Logic b) noexcept
         {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // H
         {'U'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l, 'X'_l, '0'_l, 'X'_l, 'X'_l}}; // -
     //    U      X      0      1      Z      W      L      H      -
-    return table[int(a.value())][int(b.value())];
-}
 
-constexpr Logic& operator&= (Logic& a, const Logic b) noexcept
-{
-    return (a = a & b);
-}
-
-constexpr Logic operator| (const Logic a, const Logic b) noexcept
-{
-    constexpr Logic table[9][9] = {
+    constexpr Logic or_table[9][9] = {
         {'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l, 'U'_l, 'U'_l, '1'_l, 'U'_l},  // U
         {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l},  // X
         {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // 0
@@ -140,17 +135,8 @@ constexpr Logic operator| (const Logic a, const Logic b) noexcept
         {'1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l, '1'_l},  // H
         {'U'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l, 'X'_l, 'X'_l, '1'_l, 'X'_l}}; // -
     //    U      X      0      1      Z      W      L      H      -
-    return table[int(a.value())][int(b.value())];
-}
 
-constexpr Logic& operator|= (Logic& a, const Logic b) noexcept
-{
-    return (a = a | b);
-}
-
-constexpr Logic operator^ (const Logic a, const Logic b) noexcept
-{
-    constexpr Logic table[9][9] = {
+    constexpr Logic xor_table[9][9] = {
         {'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l, 'U'_l},  // U
         {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l},  // X
         {'U'_l, 'X'_l, '0'_l, '1'_l, 'X'_l, 'X'_l, '0'_l, '1'_l, 'X'_l},  // 0
@@ -161,42 +147,67 @@ constexpr Logic operator^ (const Logic a, const Logic b) noexcept
         {'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l},  // H
         {'U'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l, 'X'_l}}; // -
     //    U      X      0      1      Z      W      L      H      -
-    return table[int(a.value())][int(b.value())];
+
+    constexpr Logic not_table[9] = {
+        'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l};
+    //   U      X      0      1      Z      W      L      H      -
+
 }
 
-constexpr Logic& operator^= (Logic& a, const Logic b) noexcept
+constexpr Logic operator& (const Logic a, const Logic b) noexcept
+{
+    return and_table[int(a.value())][int(b.value())];
+}
+
+Logic& operator&= (Logic& a, const Logic b) noexcept
+{
+    return (a = a & b);
+}
+
+constexpr Logic operator| (const Logic a, const Logic b) noexcept
+{
+    return or_table[int(a.value())][int(b.value())];
+}
+
+Logic& operator|= (Logic& a, const Logic b) noexcept
+{
+    return (a = a | b);
+}
+
+constexpr Logic operator^ (const Logic a, const Logic b) noexcept
+{
+    return xor_table[int(a.value())][int(b.value())];
+}
+
+Logic& operator^= (Logic& a, const Logic b) noexcept
 {
     return (a = a ^ b);
 }
 
 constexpr Logic operator~ (const Logic a) noexcept
 {
-    constexpr Logic table[9] = {
-        'U'_l, 'X'_l, '1'_l, '0'_l, 'X'_l, 'X'_l, '1'_l, '0'_l, 'X'_l};
-    //   U      X      0      1      Z      W      L      H      -
-    return table[int(a.value())];
+    return not_table[int(a.value())];
 }
 
-constexpr Logic& inplace_invert (Logic& a) noexcept
+Logic& inplace_invert (Logic& a) noexcept
 {
     return (a = ~a);
 }
 
 constexpr bool is01(const Logic a) noexcept
 {
-    return (a == '0'_l) || (a == '1'_l);
+    return
+        (a == '0'_l) ||
+        (a == '1'_l);
 }
 
 template <typename IntType>
 constexpr IntType to_int(const Logic a)
 {
-    if (a == '0'_l) {
-        return 0;
-    } else if (a == '1'_l) {
-        return 1;
-    } else {
+    return
+        (a == '0'_l) ? 0 :
+        (a == '1'_l) ? 1 :
         throw std::invalid_argument("Logic value cannot be converted to an integer.");
-    }
 }
 
 constexpr bool to_bool(const Logic a)
@@ -213,9 +224,9 @@ namespace {
 
 }
 
-constexpr Bit::Bit(const value_type value) noexcept : value_(value)
+constexpr Bit::Bit(const value_type value) noexcept
+  : value_((X_ASSERT(bit_value_valid(value)), value))
 {
-    assert(bit_value_valid(value_));
 }
 
 template <typename CharType, typename std::enable_if<
@@ -223,18 +234,15 @@ template <typename CharType, typename std::enable_if<
 , int>::type>
 constexpr Bit to_bit(const CharType& c)
 {
-    switch (c)
-    {
-        case '0': return Bit(Bit::_0);
-        case '1': return Bit(Bit::_1);
-        default: throw std::invalid_argument("Given value is not a Bit");
-    }
+    return
+        c == '0' ? Bit(Bit::_0) :
+        c == '1' ? Bit(Bit::_1) :
+        throw std::invalid_argument("Given value is not a Bit");
 }
 
 constexpr Bit::value_type Bit::value() const noexcept
 {
-    assert(bit_value_valid(value_));
-    return value_;
+    return (X_ASSERT(bit_value_valid(value_)), value_);
 }
 
 template <typename CharType>
@@ -250,25 +258,19 @@ constexpr Bit operator ""_b (const char c)
 
 constexpr Bit to_bit(const Logic a)
 {
-    if (a == '0'_l) {
-        return '0'_b;
-    } else if (a == '1'_l) {
-        return '1'_b;
-    } else {
+    return
+        (a == '0'_l) ? '0'_b :
+        (a == '1'_l) ? '1'_b :
         throw std::invalid_argument("Logic value cannot be converted to Bit");
-    }
 }
 
 constexpr Logic to_logic(const Bit a) noexcept
 {
-    if (a == '0'_b) {
-        return '0'_l;
-    } else {
-        return '1'_l;
-    }
+    return (a == '0'_b) ? '0'_l :'1'_l;
 }
 
-constexpr Bit::Bit(const Logic a) : Bit(to_bit(a))
+constexpr Bit::Bit(const Logic a)
+  : Bit(to_bit(a))
 {
 }
 
@@ -289,12 +291,10 @@ template <typename IntType, typename std::enable_if<
 , int>::type>
 constexpr Bit to_bit(const IntType& i)
 {
-    switch (i)
-    {
-        case 0: return '0'_b;
-        case 1: return '1'_b;
-        default: throw std::invalid_argument("Given value is not a Bit");
-    }
+    return
+        (i == 0) ? '0'_b :
+        (i == 1) ? '1'_b :
+        throw std::invalid_argument("Given value is not a Bit");
 }
 
 constexpr Bit to_bit(const Bit a) noexcept
@@ -317,7 +317,7 @@ constexpr Bit operator& (const Bit a, const Bit b) noexcept
     return to_bit((a == '1'_b) && (b == '1'_b));
 }
 
-constexpr Bit& operator&= (Bit& a, const Bit b) noexcept
+Bit& operator&= (Bit& a, const Bit b) noexcept
 {
     return (a = a & b);
 }
@@ -327,7 +327,7 @@ constexpr Bit operator| (const Bit a, const Bit b) noexcept
     return to_bit((a == '1'_b) || (b == '1'_b));
 }
 
-constexpr Bit& operator|= (Bit& a, const Bit b) noexcept
+Bit& operator|= (Bit& a, const Bit b) noexcept
 {
     return (a = a | b);
 }
@@ -337,7 +337,7 @@ constexpr Bit operator^ (const Bit a, const Bit b) noexcept
     return to_bit(a != b);
 }
 
-constexpr Bit& operator^= (Bit& a, const Bit b) noexcept
+Bit& operator^= (Bit& a, const Bit b) noexcept
 {
     return (a = a ^ b);
 }
@@ -347,7 +347,7 @@ constexpr Bit operator~ (const Bit a) noexcept
     return to_bit(a == '0'_b);
 }
 
-constexpr Bit& inplace_invert (Bit& a) noexcept
+Bit& inplace_invert (Bit& a) noexcept
 {
     return (a = ~a);
 }
