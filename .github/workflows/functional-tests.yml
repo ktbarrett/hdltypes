@@ -30,11 +30,15 @@ jobs:
         sudo apt install clang g++
     - name: Run Tests
       run: |
-        cmake -S . -B build/ -DCMAKE_CXX_FLAGS="-Wall -Wextra" -DCMAKE_CXX_STANDARD=${{matrix.standard}}
+        cmake -S . -B build/ -DCMAKE_CXX_FLAGS="-Wall -Wextra -O0 -g --coverage" -DCMAKE_CXX_STANDARD=${{matrix.standard}}
         cmake --build build/ --target test_hdltypes
         ./build/tests/test_hdltypes
       env:
         CXX: ${{matrix.compiler}}
+    - name: Upload Coverage
+      if: matrix.compiler == 'g++'
+      run: |
+        bash <(curl -s https://codecov.io/bash)
 
   manylinux2014:
     runs-on: ubuntu-latest
