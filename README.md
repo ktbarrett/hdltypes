@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/ktbarrett/hdltypes.svg?branch=master)](https://travis-ci.org/ktbarrett/hdltypes)
+[![Build Status](https://github.com/ktbarrett/hdltypes/workflows/Functional%20Tests/badge.svg)](https://github.com/ktbarrett/hdltypes/actions)
 [![Documentation Status](https://readthedocs.org/projects/hdltypes/badge/?version=latest)](https://hdltypes.readthedocs.io/en/latest/?badge=latest)
+[![Coverage](https://codecov.io/gh/ktbarrett/hdltypes/branch/master/graph/badge.svg)](https://codecov.io/gh/ktbarrett/hdltypes)
 
 
 # hdltypes
