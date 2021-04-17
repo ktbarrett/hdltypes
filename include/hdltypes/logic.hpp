@@ -8,6 +8,8 @@
 
 namespace hdltypes {
 
+using namespace util;
+
 /** Logic value type
 
     This effectively models VHDL's std_ulogic type. See value_type for details on the
@@ -73,7 +75,7 @@ constexpr Logic to_logic(bool b) noexcept;
 
 /** \relates Logic Converts integer values `0` and `1` into Logic `0` and `1`, respectively. */
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value
+    is_integer_type<IntType>::value
 , int>::type = 0>
 constexpr Logic to_logic(const IntType& i);
 
@@ -92,7 +94,7 @@ constexpr Logic to_logic(const IntType& i);
 \endverbatim
     */
 template <typename CharType, typename std::enable_if<
-    util::is_char_type<CharType>::value
+    is_char_type<CharType>::value
 , int>::type = 0>
 constexpr Logic to_logic(const CharType& c);
 
@@ -214,7 +216,7 @@ constexpr Bit to_bit(bool b) noexcept;
 
 /** \relates Bit Converts integer values `0` and `1` into Bit `0` and `1`, respectively. */
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value
+    is_integer_type<IntType>::value
 , int>::type = 0>
 constexpr Bit to_bit(const IntType& i);
 
@@ -226,7 +228,7 @@ constexpr Bit to_bit(const IntType& i);
 \endverbatim
     */
 template <typename CharType, typename std::enable_if<
-    util::is_char_type<CharType>::value
+    is_char_type<CharType>::value
 , int>::type = 0>
 constexpr Bit to_bit(const CharType& c);
 
