@@ -84,9 +84,7 @@ constexpr Logic to_logic(bool b) noexcept;
 
 /** \relates Logic Converts integer values `0` and `1` into Logic `0` and `1`, respectively. */
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value &&
-    !util::is_char_type<IntType>::value &&
-    !std::is_same<IntType, bool>::value
+    util::is_integer_type<IntType>::value
 , int>::type = 0>
 constexpr Logic to_logic(const IntType& i);
 
@@ -227,9 +225,7 @@ constexpr Bit to_bit(bool b) noexcept;
 
 /** \relates Bit Converts integer values `0` and `1` into Bit `0` and `1`, respectively. */
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value &&
-    !util::is_char_type<IntType>::value &&
-    !std::is_same<IntType, bool>::value
+    util::is_integer_type<IntType>::value
 , int>::type = 0>
 constexpr Bit to_bit(const IntType& i);
 
