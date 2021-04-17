@@ -72,9 +72,7 @@ constexpr Logic operator ""_l (const char c)
 }
 
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value &&
-    !util::is_char_type<IntType>::value &&
-    !std::is_same<IntType, bool>::value
+    util::is_integer_type<IntType>::value
 , int>::type>
 constexpr Logic to_logic(const IntType& i)
 {
@@ -283,9 +281,7 @@ constexpr Bit to_bit(const bool b) noexcept
 }
 
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value &&
-    !util::is_char_type<IntType>::value &&
-    !std::is_same<IntType, bool>::value
+    util::is_integer_type<IntType>::value
 , int>::type>
 constexpr Bit to_bit(const IntType& i)
 {
