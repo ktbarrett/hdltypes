@@ -1,9 +1,8 @@
 #include "hdltypes.hpp"
 #include <cstdint>
 
-using hdltypes::util::is_integer_type;
 using hdltypes::util::is_char_type;
-
+using hdltypes::util::is_integer_type;
 
 static_assert(is_integer_type<unsigned char>::value);
 static_assert(is_integer_type<signed char>::value);
