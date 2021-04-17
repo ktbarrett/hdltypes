@@ -182,3 +182,19 @@ TEST_CASE("Bit operations", "[logic]")
         REQUIRE(a == '1'_b);
     }
 }
+
+TEST_CASE("Logic Assignment", "[logic]")
+{
+    Logic l;
+    REQUIRE_NOTHROW( l = 'Z'_l );
+    REQUIRE( l == 'Z'_l );
+    REQUIRE_NOTHROW( l = '0'_b );
+    REQUIRE( l == '0'_l );
+}
+
+TEST_CASE("Bit Assignment", "[logic]")
+{
+    Bit b;
+    REQUIRE_NOTHROW( b = '1'_b );
+    REQUIRE( b == '1'_b );
+}
