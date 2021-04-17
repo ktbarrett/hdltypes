@@ -8,17 +8,6 @@
 
 namespace hdltypes {
 
-/* DESIGN NOTES
- * C++ does not implement enumerated types, and you cannot associate a constructor or methods with enum classes.
-    Instead, we make classes that encapsulate internally defined "value_type" enums and offer a method, `.value()`, to obtain the stored enum.
- * In VHDL Bit could be a Logic subtype, but we have no way to describe that relationship in C++.
-    Using Inheritance here has issues;
-    slicing is not safe since it may put a child Bit into an invalid state because technically Bit has additional invariants.
-    Instead, Bit is just-another-type that relates to Logic through constructors and casts.
-    These constructors and casts have carefully placed `explicit` so we get implicit casting to wider types (Bit -> Logic).
-    Other Logic-like types should follow the same recipe as Bit.
- */
-
 /** Logic value type
 
     This effectively models VHDL's std_ulogic type. See value_type for details on the
