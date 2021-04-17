@@ -5,7 +5,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(catch2content)
 
-add_executable(test_hdltypes EXCLUDE_FROM_ALL main.cpp logic.cpp)
+add_executable(test_hdltypes EXCLUDE_FROM_ALL main.cpp logic.cpp utils.cpp)
 
 target_link_libraries(test_hdltypes PRIVATE ${PROJECT_NAME} Catch2::Catch2)
 
