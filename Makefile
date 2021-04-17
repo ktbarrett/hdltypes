@@ -52,3 +52,6 @@ uninstall:
 
 clean: uninstall
 	-@rm -rf $(BUILD_DIR)
+
+format:
+	git ls-files | grep --color=never ".\(hpp\|cpp\|h\|c\)$$" | xargs clang-format -i

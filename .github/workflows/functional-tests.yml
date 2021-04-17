@@ -39,3 +39,13 @@ jobs:
       if: matrix.compiler == 'g++'
       run: |
         bash <(curl -s https://codecov.io/bash)
+
+  formatting-check:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: clang-format
+      uses: jidicula/clang-format-action@v3.3.0
+      with:
+        clang-format-version: '11'

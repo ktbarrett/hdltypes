@@ -1,26 +1,34 @@
 #ifndef HDLTYPES_UTIL_HPP
 #define HDLTYPES_UTIL_HPP
 
-#include <type_traits>  // false_type, true_type, remove_cv
+#include <type_traits> // false_type, true_type, remove_cv
 
-namespace hdltypes { namespace util {
-
+namespace hdltypes {
+namespace util {
 
 /** User overloadable check to see if a type is a character type */
 template <typename T>
-struct _is_char_type : std::false_type {};
+struct _is_char_type : std::false_type {
+};
 
-template <> struct _is_char_type<char> : std::true_type {};
-template <> struct _is_char_type<wchar_t> : std::true_type {};
-template <> struct _is_char_type<char16_t> : std::true_type {};
-template <> struct _is_char_type<char32_t> : std::true_type {};
-#if cplusplus >= 202000L
-template <> struct _is_char_type<char8_t> : std::true_type {};
+#define IS_CHAR_TYPE(type)                        \
+    template <>                                   \
+    struct _is_char_type<type> : std::true_type { \
+    }
+
+IS_CHAR_TYPE(char);
+IS_CHAR_TYPE(wchar_t);
+IS_CHAR_TYPE(char16_t);
+IS_CHAR_TYPE(char32_t);
+#if __cplusplus >= 202000L
+IS_CHAR_TYPE(char8_t);
 #endif
 
-template <typename T>
-struct is_char_type : _is_char_type<typename std::remove_cv<T>::type> {};
+#undef IS_CHAR_TYPE
 
+template <typename T>
+struct is_char_type : _is_char_type<typename std::remove_cv<T>::type> {
+};
 
 /*
   std::is_integral is not user-specializable. This method side-steps the
@@ -29,23 +37,32 @@ struct is_char_type : _is_char_type<typename std::remove_cv<T>::type> {};
 
 /** User overloadable check to see if a type is an integer type */
 template <typename T>
-struct _is_integer_type : std::false_type {};
+struct _is_integer_type : std::false_type {
+};
 
-template <> struct _is_integer_type<unsigned char> : std::true_type {};
-template <> struct _is_integer_type<signed char> : std::true_type {};
-template <> struct _is_integer_type<unsigned short> : std::true_type {};
-template <> struct _is_integer_type<signed short> : std::true_type {};
-template <> struct _is_integer_type<unsigned int> : std::true_type {};
-template <> struct _is_integer_type<signed int> : std::true_type {};
-template <> struct _is_integer_type<unsigned long> : std::true_type {};
-template <> struct _is_integer_type<signed long> : std::true_type {};
-template <> struct _is_integer_type<unsigned long long> : std::true_type {};
-template <> struct _is_integer_type<signed long long> : std::true_type {};
+#define IS_INTEGER_TYPE(type)                        \
+    template <>                                      \
+    struct _is_integer_type<type> : std::true_type { \
+    }
+
+IS_INTEGER_TYPE(unsigned char);
+IS_INTEGER_TYPE(signed char);
+IS_INTEGER_TYPE(unsigned short);
+IS_INTEGER_TYPE(signed short);
+IS_INTEGER_TYPE(unsigned int);
+IS_INTEGER_TYPE(signed int);
+IS_INTEGER_TYPE(unsigned long);
+IS_INTEGER_TYPE(signed long);
+IS_INTEGER_TYPE(unsigned long long);
+IS_INTEGER_TYPE(signed long long);
+
+#undef IS_INTEGER_TYPE
 
 template <typename T>
-struct is_integer_type : _is_integer_type<typename std::remove_cv<T>::type> {};
+struct is_integer_type : _is_integer_type<typename std::remove_cv<T>::type> {
+};
 
-
-}}
+}
+}
 
 #endif
