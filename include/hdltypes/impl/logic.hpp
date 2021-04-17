@@ -12,6 +12,8 @@
 
 namespace hdltypes {
 
+using namespace util;
+
 namespace {
 
     static constexpr bool logic_value_valid(const Logic::value_type value)
@@ -27,7 +29,7 @@ constexpr Logic::Logic(const value_type value) noexcept : value_(value)
 }
 
 template <typename CharType, typename std::enable_if<
-    util::is_char_type<CharType>::value
+    is_char_type<CharType>::value
 , int>::type>
 constexpr Logic to_logic(const CharType& c)
 {
@@ -72,7 +74,7 @@ constexpr Logic operator ""_l (const char c)
 }
 
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value
+    is_integer_type<IntType>::value
 , int>::type>
 constexpr Logic to_logic(const IntType& i)
 {
@@ -217,7 +219,7 @@ constexpr Bit::Bit(const value_type value) noexcept : value_(value)
 }
 
 template <typename CharType, typename std::enable_if<
-    util::is_char_type<CharType>::value
+    is_char_type<CharType>::value
 , int>::type>
 constexpr Bit to_bit(const CharType& c)
 {
@@ -281,7 +283,7 @@ constexpr Bit to_bit(const bool b) noexcept
 }
 
 template <typename IntType, typename std::enable_if<
-    util::is_integer_type<IntType>::value
+    is_integer_type<IntType>::value
 , int>::type>
 constexpr Bit to_bit(const IntType& i)
 {
